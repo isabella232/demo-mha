@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Amiri'), local('Amiri-Regular'), url(../fonts.gstatic.com/s/amiri/v7/oQ3RFToBQJ_EZFaQ3h6qsw.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Amiri Bold'), local('Amiri-Bold'), url(../fonts.gstatic.com/s/amiri/v7/YQHcdp4JKzcoPOt4S4NUy_esZW2xOQ-xsNqO47m55DA.ttf) format('truetype');
+}

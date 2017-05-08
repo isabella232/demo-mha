@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Scheherazade';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Scheherazade'), local('Scheherazade-Regular'), url(https://fonts.gstatic.com/s/scheherazade/v12/AuKlqGWzUC-8XqMOmsqXi_MZXuCXbOrAvx5R0IT5Oyo.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Scheherazade';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Scheherazade Bold'), local('Scheherazade-Bold'), url(https://fonts.gstatic.com/s/scheherazade/v12/C1wtT46acJkQxc6mPHwvHPLUrwYBIb_gj6AmDnFuDx8.ttf) format('truetype');
+}

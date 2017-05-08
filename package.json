@@ -1,0 +1,117 @@
+{
+  "name": "skeleton",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.18.6",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.2.3",
+    "jspm": "beta"
+  },
+  "jspm": {
+    "name": "skeleton",
+    "main": "skeleton.js",
+    "dependencies": {
+      "algoliasearch": "npm:algoliasearch@^3.20.3",
+      "angular": "github:angular/bower-angular@^1.6.1",
+      "lodash": "npm:lodash@^4.17.4",
+      "vue": "npm:vue@^2.1.8"
+    },
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.18"
+    },
+    "peerDependencies": {
+      "assert": "npm:jspm-nodelibs-assert@^0.2.0",
+      "buffer": "npm:jspm-nodelibs-buffer@^0.2.0",
+      "child_process": "npm:jspm-nodelibs-child_process@^0.2.0",
+      "constants": "npm:jspm-nodelibs-constants@^0.2.0",
+      "crypto": "npm:jspm-nodelibs-crypto@^0.2.0",
+      "events": "npm:jspm-nodelibs-events@^0.2.0",
+      "fs": "npm:jspm-nodelibs-fs@^0.2.0",
+      "http": "npm:jspm-nodelibs-http@^0.2.0",
+      "https": "npm:jspm-nodelibs-https@^0.2.0",
+      "net": "npm:jspm-nodelibs-net@^0.2.0",
+      "os": "npm:jspm-nodelibs-os@^0.2.0",
+      "path": "npm:jspm-nodelibs-path@^0.2.0",
+      "process": "npm:jspm-nodelibs-process@^0.2.0",
+      "stream": "npm:jspm-nodelibs-stream@^0.2.0",
+      "string_decoder": "npm:jspm-nodelibs-string_decoder@^0.2.0",
+      "tls": "npm:jspm-nodelibs-tls@^0.2.0",
+      "url": "npm:jspm-nodelibs-url@^0.2.0",
+      "util": "npm:jspm-nodelibs-util@^0.2.0",
+      "vm": "npm:jspm-nodelibs-vm@^0.2.0",
+      "zlib": "npm:jspm-nodelibs-zlib@^0.2.0"
+    },
+    "overrides": {
+      "github:angular/bower-angular@1.6.1": {
+        "main": "angular",
+        "meta": {
+          "angular.js": {
+            "exports": "angular",
+            "format": "global"
+          }
+        }
+      },
+      "npm:browserify-zlib@0.1.4": {
+        "dependencies": {
+          "readable-stream": "^2.0.2",
+          "pako": "~0.2.0"
+        },
+        "map": {
+          "_stream_transform": "readable-stream/transform"
+        }
+      },
+      "npm:debug@2.6.0": {
+        "main": "src/browser.js",
+        "jspmNodeConversion": false,
+        "format": "cjs",
+        "map": {
+          "./src/browser.js": {
+            "node": "./src/node.js"
+          },
+          "./node.js": {
+            "browser": "./src/browser.js"
+          },
+          "fs": "@node/fs",
+          "net": "@node/net",
+          "tty": "@node/tty",
+          "util": "@node/util"
+        }
+      },
+      "npm:inherits@2.0.3": {
+        "ignore": [
+          "test.js"
+        ]
+      },
+      "npm:lodash@4.17.4": {
+        "map": {
+          "buffer": "@empty",
+          "process": "@empty"
+        }
+      },
+      "npm:ms@0.7.2": {
+        "jspmNodeConversion": false,
+        "format": "cjs"
+      },
+      "npm:readable-stream@1.1.14": {
+        "map": {
+          "stream": "stream-browserify/index"
+        },
+        "systemjs": {
+          "main": "readable.js"
+        },
+        "dependencies": {
+          "core-util-is": "~1.0.0",
+          "inherits": "~2.0.1",
+          "isarray": "0.0.1",
+          "string_decoder": "~0.10.0",
+          "stream-browserify": "^1.0.0"
+        }
+      }
+    }
+  }
+}

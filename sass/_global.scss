@@ -1,0 +1,112 @@
+// ------------- GLOBAL OVERRIDES ------------- //
+.algolia {
+    &-input {
+        &-container {
+            text-align: center;
+            margin: 40px auto 30px auto;
+        }
+        &-search {
+            padding: 14px 18px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 600px;
+            font-size: 24px;
+            border-radius: 4px;
+        }
+    }
+    &-wrapper {
+        display: flex;
+        &-sidebar {
+            flex-grow: 1;
+            flex-basis: 0;
+            margin-top: 46px;
+        }
+        &-main {
+            flex-grow: 2;
+            flex-basis: 0;
+            margin-left: 30px;
+        }
+    }
+    &-facets {
+        &-container {
+            margin-bottom: 20px;
+        }
+        &-item {
+            & + & {
+                margin-left: 10px;
+            }
+        }
+    }
+    &-map {
+        &-container {
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: #ccc;
+            position: relative;
+            &:before {
+                content: "Map goes here";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+            }
+        }
+    }
+    &-sort {
+        &-container {
+            border-bottom: 1px solid #ccc;
+        }
+        &-active {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 14px 22px;
+            border-bottom: 1px solid #fff;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            margin-bottom: -1px;
+        }
+    }
+    &-results {
+        margin-top: 30px;
+    }
+    &-result {
+        display: flex;
+        & + & {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        &-share {
+            &-icon {
+                width: 30px;
+                cursor: pointer;
+            }
+        }
+        &-content {
+            flex-grow: 1;
+            margin-left: 10px;
+            &-type {
+                font-size: 16px;
+                text-transform: uppercase;
+                margin-bottom: 14px;
+                font-weight: 300;
+            }
+            &-name {
+                font-size: 22px;
+                margin-bottom: 8px;
+            }
+            &-address {
+                font-size: 16px;
+                margin-bottom: 8px;
+                span {
+                    display: block;
+                }
+            }
+            &-availability {
+                text-transform: uppercase;
+                margin-bottom: 0;
+                font-weight: 700;
+            }
+        }
+    }
+}

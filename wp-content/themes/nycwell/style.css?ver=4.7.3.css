@@ -1,0 +1,361 @@
+/*
+Theme Name: NYC Well
+Author: DoITT / Beacon Health Options
+Author URI: http://beaconhealthoptions.com/
+Description: Theme designed for NYC Well September 2016
+Version: 1.0
+License: Copyright Beacon Health Options
+License URI: 
+Tags: 
+*/
+
+
+/* css layout and formatting based on http://csswizardry.com/2012/04/my-html-css-coding-style/ & https://smacss.com/ */
+
+
+/*------------------------------------*\
+    CONTENTS
+\*------------------------------------*/
+/*
+BASE        HTML, BODY, etc.
+LAYOUT		HEADER, FOOTER, ARTICLE, etc.
+MODULE		LANGUAGE SWITCHER, MENUS, WIDGETS, etc.
+STATE		HOVER, ACTIVE, etc.
+THEME
+*/
+
+
+
+/*------------------------------------*\
+    $BASE
+\*------------------------------------*/
+
+.logo-nycwell { /*left:25px;*/ }
+@media (max-width:440px){
+	#top { margin-bottom:35px; }
+	.top-menu ul.left {
+		padding-left:9px;
+	}
+}
+.maincontent article ul.list-tight li { margin-bottom: 1.0rem; }
+
+@media (min-width:768px){
+	.navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+		margin-left: 10px;
+	}
+}
+
+
+/*------------------------------------*\
+    $LAYOUT
+\*------------------------------------*/
+
+html #env-badge { 
+	display:none; 
+	z-index: 1000;
+	color: #636fab;
+	position: absolute;
+	font-size: 40px;
+	padding: 20px;
+	text-shadow: #fff 2px 2px;
+} 
+html.dev #env-badge { display:block; } 
+html.stg #env-badge { display:none; } 
+@media (max-width: 767px) {
+	.inside-hero .jumbotron h1 {
+		margin-top: 40px;
+	}
+}
+
+/*------------------------------------*\
+    $MODULE
+\*------------------------------------*/
+
+/* top nav */
+#navbar .menu-item button.btn { 
+	position: absolute;
+    top: 12px;
+    right: 0px;
+    margin-right: 15px;
+    padding-right: 10px;
+}
+@media (max-width: 1200px) {
+	#navbar .menu-item a span { display:none; }
+}
+@media (min-width: 1201px) {
+	#navbar .menu-item button.btn { display:none; }
+	html .container #navbar { margin-left:185px !important; }
+}
+
+/* footer links */ 
+ul#menu-footer-links-en li::after {
+    content: ' | ';
+}
+ul#menu-footer-links-en li::before {
+    content: '  ';
+}
+ul#menu-footer-links-en li:last-child::after {
+    content: '';
+}
+.globalfoot li a { margin: 0px 10px; }
+
+/* content-end language switcher */
+#lang-switch { margin-bottom:25px; }
+#lang-switch ul { list-style: none; }
+#lang-switch li.lang-item { float: right; margin-left: 25px; }
+
+/* flyouttab (language switcher) */
+@media (min-width: 769px) {
+	#flyout-tabs .ui-tabs-panel { background-color:#d86a00; }
+	#flyout-tabs ul.ui-tabs-nav li.ui-tabs-active a { background-color: #d86a00; }
+	#flyout-tabs .ui-tabs-panel .lang { margin-bottom: 24px; }
+}
+#flyout-tabs .ui-tabs-panel {
+    right: 50px;
+}
+#flyout-tabs ul.ui-tabs-nav li { height:50px; width:50px; }
+#flyout-tabs ul.ui-tabs-nav li a { 
+	background-color: #e96f0b; 
+    color: #fff;
+    height: 50px;
+    width: 50px;
+	font-size: 36px;
+    text-align: center;
+    padding: 6px;
+	}
+#flyout-tabs ul.ui-tabs-nav li#bubble a, #flyout-tabs ul.ui-tabs-nav li#switcher a { font-size:32px; }
+#flyout-tabs ul.ui-tabs-nav li#phone a, #flyout-tabs ul.ui-tabs-nav li#bubble a, #flyout-tabs ul.ui-tabs-nav li#switcher a {
+    background-image: none;
+}
+#widgetarea-flyouttab_lang ul { list-style:none; margin-left:0px; padding-left:0px; }
+#widgetarea-flyouttab_lang ul li { display:block; }
+#widgetarea-flyouttab_lang li a:before { content: 'See this page in '; }
+#call .lang { line-height:1.1em; }
+#flyout-tabs .ui-tabs-panel a.goog-te-menu-value, #flyout-tabs .ui-tabs-panel a.goog-te-menu-value:hover { color:#000; text-decoration:none; }
+/*html.translated-ltr body.alt-nav nav, html.translated-rtl body.alt-nav nav, html.translated-orig body.alt-nav nav { top:38px; }*/
+/*html.translated-ltr #flyout-tabs a.show-original, html.translated-rtl #flyout-tabs a.show-original { display:block; }*/
+
+/* photo attribution */
+
+.photo-attribution { 
+	border-top: 1px solid #ccc;
+    margin-top: 50px;
+    font-size: 12px;
+	clear:both;
+}
+
+.page-template-page-photobg .photo-attribution { background: rgba(255,255,255,.8); padding: 10px; }
+
+.photo-attribution .credit::before { content: "Header photo by "; } 
+
+/* survey popup */
+.pum-theme-245 .pum-content + .pum-close, .pum-theme-default-theme .pum-content + .pum-close { background-color:#4955A1 !important; }
+
+/* new survey popup */
+#surveybox { 
+    position: fixed;
+    /*bottom: -250px;*/
+	bottom:0px;
+    right: 20px;
+    height: 354px;
+	display:none;
+	border:1px solid #e96f0b;
+}
+#surveytab {
+	height: 40px;
+    background: #e96f0b;
+    width: 350px;
+    padding: 0px 15px;
+    color: #fff;
+    font-weight: bold;
+    line-height: 40px;
+}
+#surveybody {
+	background: #fff;
+    width: 350px;
+    padding: 15px;
+    height: 314px;
+}
+#surveyoptin { }
+#surveymonkey { display:none; }
+
+#surveytitle { display:inline-block; float:left;}
+a#surveyclose{ display:inline-block; float:right; color:#fff; }
+
+#surveybox .btn { margin-bottom:7px; }
+
+/* new translate popup */
+#translatebox { 
+    position: fixed;
+    /*bottom: -250px;*/
+	top:0px;
+    right: 20px;
+    /*height: 180px;*/
+	display:none;
+	border:1px solid #e96f0b;
+	z-index:110;
+}
+@media (max-width:500px){
+	#translatebox { 
+		width:282px;
+		min-height:180px;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		right: auto;
+		margin-top: -90px;
+		margin-left: -150px;
+	}
+}
+@media (max-width:991px) { 
+	#top-menu-lang { display:none; } 
+}
+#translatebody .prisna-gwt-align-left#google_translate_element { text-align:left !important; }
+#translatebody p { margin-bottom:0px; }
+#translatetab {
+	height: 40px;
+    background: #e96f0b;
+    width: 280px;
+    padding: 0px 15px;
+    color: #fff;
+    font-weight: bold;
+    line-height: 40px;
+}
+#translatebody {
+	background: #fff;
+    width: 280px;
+    padding: 15px;
+    /*height: 140px;*/
+}
+
+#translatetitle { display:inline-block; float:left;}
+a#translateclose{ display:inline-block; float:right; color:#fff; }
+
+#translatebox .btn { margin-bottom:7px; }
+
+/* mct referral form */
+
+.mct-box-call { min-height:55px; border:2px solid #F58220; padding:5px 5px 5px 60px; background: url(https://nycwell.cityofnewyork.us/wp-content/themes/nycwell/img/icon-call.png) left top no-repeat; font-size: 18px; font-weight: bold; }
+.mct-box-car { min-height:55px; border:2px solid #F58220; padding:5px 5px 5px 60px; background: url(https://nycwell.cityofnewyork.us/wp-content/themes/nycwell/img/icon-car.png) left top no-repeat; font-size: 18px; font-weight: bold; }
+
+/* immediate attention */
+.maincontent article .immediate-attention {
+    padding: 0px;
+}
+
+h1 small { line-height:1em; }
+
+/* jumbotron headers */
+.jumbotron h1 a { color:#fff !important; }
+
+
+/*------------------------------------*\
+    $STATE
+\*------------------------------------*/
+
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary,
+.btn-primary.focus, .btn-primary:focus,
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+	background-color:#646eac;
+	border-color:#515a92;
+}
+
+/*------------------------------------*\
+    $THEME
+\*------------------------------------*/
+
+@media (max-width:400px){
+
+	.inside-hero-generic-theme {
+		background-color: #6a5fa4;
+		background-image: url(https://nycwell.cityofnewyork.us/wp-content/themes/img/banner-onechild-purple.jpg);
+		background-position: 0% 0%;
+	}
+
+}
+
+	
+	
+/*------------------------------------*\
+    $PAGE SPECIFIC
+\*------------------------------------*/
+
+/* home page */
+@media screen and (min-width: 768px){
+	.carousel-indicators {
+		 bottom: 10px; 
+	}
+}
+.home-hero .jumbotron { padding: 8% 0 2%; }
+.home-hero .jumbotron h1 { margin-top:0px; }
+.home-hero .jumbotron h1 span { font-weight:normal; }
+.home-hero .jumbotron h2 { margin: 2rem 0 3rem; }
+.home-hero .jumbotron h2 span { display: block; font-size: 4.13rem; font-weight: bold; color: #fff; }
+.home-hero .jumbotron a.action-item h2 span { font-weight: bold; font-size: 2.7rem; text-align: center; }
+.home-hero .jumbotron h2 span.notranslate { display:inline; }
+.home-hero .jumbotron a h2 span.notranslate { display:inline; font-size:2.7rem; }
+.inside-hero .jumbotron h1 span.notranslate { display:inline; font-size:6.3rem; }
+.inside-hero .jumbotron h1 span span.notranslate { font-size: 4.13rem; }
+.inside-info-panel span.notranslate { display:inline; color:#000; }
+.inside-info-panel p span.notranslate { font-weight:normal; }
+@media (max-width: 767px) {
+	.home-hero .jumbotron h1 { margin-top:40px; }
+}
+@media (max-width: 1373px) {
+	.carousel-content h4 {
+		font-size: 2.5rem !important;
+	}
+}
+#info-right { text-align:left; }
+#info-right h3 { font-size:24px; }
+#info-right ul { text-align:left; list-style-type:disc; padding-left:24px; }
+
+/* chat with a counselor now */
+.page-id-65 .banner.has-image .banner-text { display:none; }
+#chat-terms-box { margin:20px; }
+#chat-terms-box-terms { border:1px solid #666; background:#ececec; padding:20px; }
+#chat-terms-box-agree { padding:20px; }
+#chat-options { display:none; }
+.chat-options .col-sm-3 { padding:5px; margin-bottom:20px; }
+
+/* get help now section */
+.immediate-attention h3 span { display:block; }
+.subfoot .textwidget { padding:0px; }
+
+/*find services*/
+.page-template-page-find-services .maincontent article { padding:0 0%; }
+
+/*mct referral pre-survey form*/
+#frm_form_6_container .frm_submit, #frm_form_7_container .frm_submit, #frm_form_8_container .frm_submit { display:none; }
+
+/*prevent flash - en fields*/
+#frm_field_106_container,
+#frm_field_108_container, 
+#frm_field_109_container,
+#frm_field_111_container,
+#frm_field_112_container,
+#frm_field_144_container {
+	display:none; 
+}
+
+/*prevent flash - zh fields*/
+#frm_field_146_container,
+#frm_field_147_container, 
+#frm_field_148_container,
+#frm_field_149_container,
+#frm_field_150_container,
+#frm_field_151_container {
+	display:none; 
+}
+
+/*prevent flash - es fields*/
+#frm_field_153_container,
+#frm_field_154_container, 
+#frm_field_155_container,
+#frm_field_156_container,
+#frm_field_157_container,
+#frm_field_158_container {
+	display:none; 
+}
+
+

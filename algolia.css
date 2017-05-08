@@ -1,0 +1,98 @@
+.algolia-input-container {
+  text-align: center;
+  margin: 40px auto 30px auto; }
+
+.algolia-input-search {
+  padding: 14px 18px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 600px;
+  font-size: 24px;
+  border-radius: 4px; }
+
+.algolia-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+  .algolia-wrapper-sidebar {
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    -ms-flex-preferred-size: 0;
+        flex-basis: 0;
+    margin-top: 46px; }
+  .algolia-wrapper-main {
+    -webkit-box-flex: 2;
+        -ms-flex-positive: 2;
+            flex-grow: 2;
+    -ms-flex-preferred-size: 0;
+        flex-basis: 0;
+    margin-left: 30px; }
+
+.algolia-facets-container {
+  margin-bottom: 20px; }
+
+.algolia-facets-item + .algolia-facets-item {
+  margin-left: 10px; }
+
+.algolia-map-container {
+  width: 100%;
+  padding-bottom: 100%;
+  background-color: #ccc;
+  position: relative; }
+  .algolia-map-container:before {
+    content: "Map goes here";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%); }
+
+.algolia-sort-container {
+  border-bottom: 1px solid #ccc; }
+
+.algolia-sort-active {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 14px 22px;
+  border-bottom: 1px solid #fff;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  margin-bottom: -1px; }
+
+.algolia-results {
+  margin-top: 30px; }
+
+.algolia-result {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+  .algolia-result + .algolia-result {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 20px; }
+  .algolia-result-share-icon {
+    width: 30px;
+    cursor: pointer; }
+  .algolia-result-content {
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
+    margin-left: 10px; }
+    .algolia-result-content-type {
+      font-size: 16px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      font-weight: 300; }
+    .algolia-result-content-name {
+      font-size: 22px;
+      margin-bottom: 8px; }
+    .algolia-result-content-address {
+      font-size: 16px;
+      margin-bottom: 8px; }
+      .algolia-result-content-address span {
+        display: block; }
+    .algolia-result-content-availability {
+      text-transform: uppercase;
+      margin-bottom: 0;
+      font-weight: 700; }

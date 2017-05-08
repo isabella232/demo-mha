@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Mirza';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Mirza'), local('Mirza-Regular'), url(https://fonts.gstatic.com/s/mirza/v1/VCvVt59XigYxn0m8hjo62w.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Mirza';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Mirza Bold'), local('Mirza-Bold'), url(https://fonts.gstatic.com/s/mirza/v1/OcpGZPNg9j8F_ZJ1EqL7X_esZW2xOQ-xsNqO47m55DA.ttf) format('truetype');
+}
