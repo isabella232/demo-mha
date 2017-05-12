@@ -37,16 +37,23 @@
 
 .algolia-map-container {
   width: 100%;
-  padding-bottom: 100%;
-  background-color: #ccc;
-  position: relative; }
-  .algolia-map-container:before {
+  /*padding-bottom: 100%;*/
+  /*background-color: #ccc;*/
+  position: relative; 
+}
+  /*.algolia-map-container:before {
     content: "Map goes here";
     position: absolute;
     top: 50%;
     left: 50%;
     -webkit-transform: translateX(-50%) translateY(-50%);
-            transform: translateX(-50%) translateY(-50%); }
+            transform: translateX(-50%) translateY(-50%); }*/
+
+#map {
+   width: 100%;
+   height: 606.67px;
+   background-color: grey;
+ }
 
 .algolia-sort-container {
   border-bottom: 1px solid #ccc; }
