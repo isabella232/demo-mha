@@ -35,6 +35,10 @@
 .algolia-facets-item + .algolia-facets-item {
   margin-left: 10px; }
 
+em {
+  background-color: yellow;
+}
+
 .algolia-map-container {
   width: 100%;
   /*padding-bottom: 100%;*/
