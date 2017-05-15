@@ -29,7 +29,8 @@ function renderResults ($results_container, results_data) {
 
 	var results =  results_data.hits.map(function renderHit(hit) {
 		var highlighted = hit._highlightResult;
-		
+		console.log('hhhhh', highlighted)
+
 		return (
 			'<div class="algolia-result">'+
 			    '<div class="algolia-result-share-container">'+
@@ -37,7 +38,7 @@ function renderResults ($results_container, results_data) {
 			    '</div>'+
 			    '<div class="algolia-result-content">'+
 			        '<p class="algolia-result-content-type">Clinic</p>'+
-			        '<p class="algolia-result-content-name">'+hit.programName+'</p>'+
+			        '<p class="algolia-result-content-name">'+highlighted.programName.value+'</p>'+
 			        '<p class="algolia-result-content-address">'+
 			            '<span>'+hit.street+'</span>'+
 			            '<span>'+hit.city+' , '+hit.state+' '+hit.zip+'</span>'+
@@ -60,9 +61,10 @@ function renderResults ($results_container, results_data) {
 var fitMapToMarkersAutomatically = true;
 algoliaHelper.on('result', function(content, state) {
 	//initialize map
-	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 4, minZoom: 3, maxZoom: 20 });
+	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 5, maxZoom: 20 });
 	var markers = [];
 
+    
 	// Add the markers to the map
 	for (var i = 0; i < content.hits.length; ++i) {
 		var hit = content.hits[i];
@@ -74,24 +76,22 @@ algoliaHelper.on('result', function(content, state) {
 		    markers.push(marker);
 		}
 	}
+	console.log('num of markers', content.hits.length, markers)
 
 	// Automatically fit the map zoom and position to see the markers
 	if (fitMapToMarkersAutomatically) {
-	var mapBounds = new google.maps.LatLngBounds();
-	for (i = 0; i < markers.length; i++) {
-	  mapBounds.extend(markers[i].getPosition());
-	}
-	map.fitBounds(mapBounds);
+		var mapBounds = new google.maps.LatLngBounds();
+		for (i = 0; i < markers.length; i++) {
+		  mapBounds.extend(markers[i].getPosition());
+		}
+		map.fitBounds(mapBounds);
 	}
 
 	//retrieve center
-	google.maps.event.addListener(map, "center_changed", function() {
-		console.log('center changed!', [map.getCenter().lat(),map.getCenter().lng()].join(', '))
+	google.maps.event.addListener(map, "dragend", function() {
 		algoliaHelper.setQueryParameter('aroundLatLng', [map.getCenter().lat(),map.getCenter().lng()].join(', ')).search();
-        // infoWnd.setContent(mapCanvas.getCenter().toUrlValue());
-        // infoWnd.setPosition(mapCanvas.getCenter());
-        // infoWnd.open(mapCanvas);
     });
+
 });
 //--------------------------------
 
@@ -118,6 +118,8 @@ function searchCallback (content, state) {
 //       .toggleRefine('Free shipping')
 //       .search();
 var $facet_container = $('.algolia-facets-container')
+var facetAttrSelected = '';
+var facetValSelected = '';
 
 function handleFacetClick(e) {
   e.preventDefault();
@@ -126,6 +128,8 @@ function handleFacetClick(e) {
   var value = target.dataset.value;
   if(!attribute || !value) return;
   algoliaHelper.toggleRefine(attribute, value).search();
+  facetAttrSelected = attribute
+  facetValSelected = value
 }
 
 function renderFacets($facet_container, results) {
@@ -148,10 +152,19 @@ function renderFacets($facet_container, results) {
     })
     // console.log(facetsValuesList.join('') )
 
+    // if (facetAttrSelected) {
     if (styles[name]) {
-	  	
+    	console.log('a', facetAttrSelected, 's', facetValSelected, 'n', name)
+	  	var button_selected_html = ''; 
+
+	  	if (facetAttrSelected == name) {
+	  		button_selected_html = facetValSelected ? facetValSelected : styles[name].name;
+	  	} else {
+	  		button_selected_html = styles[name].name
+	  	}
+
 	  	var buttonHtml = '<div class="btn-group algolia-facets-item">'+
-		  '<button type="button" class="btn btn-'+styles[name].style+'">'+styles[name].name+'</button>'+
+		  '<button type="button" class="btn btn-'+styles[name].style+' '+name+'">'+button_selected_html+'</button>'+
 		  '<button type="button" class="btn btn-'+styles[name].style+' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
 		    '<span class="caret"></span>'+
 		    '<span class="sr-only">Toggle Dropdown</span>'+
@@ -164,9 +177,12 @@ function renderFacets($facet_container, results) {
 	    return buttonHtml;    	
     }
 
+
     // return header + '<select class="facets">' + facetsValuesList.join('') + '</select>';
   });
 
+	facetAttrSelected = '';
+	facetValSelected = '';
   $facet_container.html(facets);	
   // $facet_container.html(facets.join(''));
 }
