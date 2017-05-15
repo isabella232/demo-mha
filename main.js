@@ -25,7 +25,11 @@ $inputfield.keyup(function(e) {
 });
 
 function renderResults ($results_container, results_data) {
+
+
 	var results =  results_data.hits.map(function renderHit(hit) {
+		var highlighted = hit._highlightResult;
+		
 		return (
 			'<div class="algolia-result">'+
 			    '<div class="algolia-result-share-container">'+
@@ -56,7 +60,7 @@ function renderResults ($results_container, results_data) {
 var fitMapToMarkersAutomatically = true;
 algoliaHelper.on('result', function(content, state) {
 	//initialize map
-	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 4, minZoom: 3, maxZoom: 12 });
+	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 4, minZoom: 3, maxZoom: 20 });
 	var markers = [];
 
 	// Add the markers to the map
@@ -79,6 +83,15 @@ algoliaHelper.on('result', function(content, state) {
 	}
 	map.fitBounds(mapBounds);
 	}
+
+	//retrieve center
+	google.maps.event.addListener(map, "center_changed", function() {
+		console.log('center changed!', [map.getCenter().lat(),map.getCenter().lng()].join(', '))
+		algoliaHelper.setQueryParameter('aroundLatLng', [map.getCenter().lat(),map.getCenter().lng()].join(', ')).search();
+        // infoWnd.setContent(mapCanvas.getCenter().toUrlValue());
+        // infoWnd.setPosition(mapCanvas.getCenter());
+        // infoWnd.open(mapCanvas);
+    });
 });
 //--------------------------------
 
