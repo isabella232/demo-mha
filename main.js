@@ -4,7 +4,7 @@ var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_050117';
 var PARAMS = { 
-	hitsPerPage: 10,
+	hitsPerPage: 20,
 	facets: ['insurancesAccepted', 'specialPopulations', 'coverage', 'county', 'categories'] 
 };
 
@@ -52,31 +52,33 @@ function renderResults ($results_container, results_data) {
 	$results_container.html(results);
 }
 
-var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 4, minZoom: 3, maxZoom: 12 });
-
 //marker 
 var fitMapToMarkersAutomatically = true;
 algoliaHelper.on('result', function(content, state) {
-  var markers = [];
-  // Add the markers to the map
-  for (var i = 0; i < content.hits.length; ++i) {
-    var hit = content.hits[i];
-    if (content.hits[i]._geoloc) {
-	    var marker = new google.maps.Marker({
-	      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
-	      map: map
-	    });
-	    markers.push(marker);
-    }
-  }
-  // Automatically fit the map zoom and position to see the markers
-  if (fitMapToMarkersAutomatically) {
-    var mapBounds = new google.maps.LatLngBounds();
-    for (i = 0; i < markers.length; i++) {
-      mapBounds.extend(markers[i].getPosition());
-    }
-    map.fitBounds(mapBounds);
-  }
+	//initialize map
+	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 4, minZoom: 3, maxZoom: 12 });
+	var markers = [];
+
+	// Add the markers to the map
+	for (var i = 0; i < content.hits.length; ++i) {
+		var hit = content.hits[i];
+		if (content.hits[i]._geoloc) {
+		    var marker = new google.maps.Marker({
+		      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
+		      map: map
+		    });
+		    markers.push(marker);
+		}
+	}
+
+	// Automatically fit the map zoom and position to see the markers
+	if (fitMapToMarkersAutomatically) {
+	var mapBounds = new google.maps.LatLngBounds();
+	for (i = 0; i < markers.length; i++) {
+	  mapBounds.extend(markers[i].getPosition());
+	}
+	map.fitBounds(mapBounds);
+	}
 });
 //--------------------------------
 
@@ -91,6 +93,9 @@ function searchCallback (content, state) {
 
 	renderResults($results_container, content);
 	renderFacets($facet_container, content);
+	var $facets = $('.facets');
+	$facets.on('click', handleFacetClick);
+
 }
 
 //------------------------------------------------------------------------
@@ -99,16 +104,13 @@ function searchCallback (content, state) {
 // helper.toggleRefine('Movies & TV Shows')
 //       .toggleRefine('Free shipping')
 //       .search();
-var $facets = $('.facets');
 var $facet_container = $('.algolia-facets-container')
-// $facets.on('change', handleFacetClick);
 
 function handleFacetClick(e) {
   e.preventDefault();
   var target = e.target;
   var attribute = target.dataset.attribute;
   var value = target.dataset.value;
-  console.log(attribute,value)
   if(!attribute || !value) return;
   algoliaHelper.toggleRefine(attribute, value).search();
 }
@@ -124,25 +126,24 @@ function renderFacets($facet_container, results) {
   		categories: {name: 'Special Populations', style: 'success'},
   	}
 
-    // var header = '<h4>' + name + '</h4>';
     var facetValues = results.getFacetValues(name);
 
     var facetsValuesList = $.map(facetValues, function(facetValue) {
       var facetValueClass = facetValue.isRefined ? 'refined'  : '';
-      return '<li class="facets '+facetValueClass+'" data-attribute="' + name + '" data-value="' + facetValue.name + '" onclick="handleFacetClick"><a>' + facetValue.name + '</a></li>';
+      return '<li class="facets '+facetValueClass+'" ><a data-attribute="' + name + '" data-value="' + facetValue.name + '">' + facetValue.name + '</a></li>';
       
     })
     // console.log(facetsValuesList.join('') )
 
     if (styles[name]) {
 	  	
-	  	var buttonHtml = '<div class="btn-group">'+
+	  	var buttonHtml = '<div class="btn-group algolia-facets-item">'+
 		  '<button type="button" class="btn btn-'+styles[name].style+'">'+styles[name].name+'</button>'+
 		  '<button type="button" class="btn btn-'+styles[name].style+' dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'+
 		    '<span class="caret"></span>'+
 		    '<span class="sr-only">Toggle Dropdown</span>'+
 		  '</button>'+
-		  '<ul class="dropdown-menu">'+
+		  '<ul class=" dropdown-menu">'+
 		    facetsValuesList.join('') +
 		  '</ul>'+
 		'</div>';
@@ -150,15 +151,12 @@ function renderFacets($facet_container, results) {
 	    return buttonHtml;    	
     }
 
-
     // return header + '<select class="facets">' + facetsValuesList.join('') + '</select>';
   });
 
   $facet_container.html(facets);	
   // $facet_container.html(facets.join(''));
 }
-
-
 
 
 
