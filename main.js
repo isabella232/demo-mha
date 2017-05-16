@@ -29,8 +29,6 @@ function renderResults ($results_container, results_data) {
 
 	var results =  results_data.hits.map(function renderHit(hit) {
 		var highlighted = hit._highlightResult;
-		console.log('hhhhh', highlighted)
-
 		return (
 			'<div class="algolia-result">'+
 			    '<div class="algolia-result-share-container">'+
@@ -76,7 +74,6 @@ algoliaHelper.on('result', function(content, state) {
 		    markers.push(marker);
 		}
 	}
-	console.log('num of markers', content.hits.length, markers)
 
 	// Automatically fit the map zoom and position to see the markers
 	if (fitMapToMarkersAutomatically) {
@@ -150,11 +147,10 @@ function renderFacets($facet_container, results) {
       return '<li class="facets '+facetValueClass+'" ><a data-attribute="' + name + '" data-value="' + facetValue.name + '">' + facetValue.name + '</a></li>';
       
     })
-    // console.log(facetsValuesList.join('') )
 
     // if (facetAttrSelected) {
     if (styles[name]) {
-    	console.log('a', facetAttrSelected, 's', facetValSelected, 'n', name)
+    	// console.log('a', facetAttrSelected, 's', facetValSelected, 'n', name)
 	  	var button_selected_html = ''; 
 
 	  	if (facetAttrSelected == name) {
