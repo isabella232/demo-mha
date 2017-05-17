@@ -111,9 +111,6 @@ function searchCallback (content, state) {
 //------------------------------------------------------------------------
 
 // faceting
-// helper.toggleRefine('Movies & TV Shows')
-//       .toggleRefine('Free shipping')
-//       .search();
 var $facet_container = $('.algolia-facets-container')
 var facetAttrSelected = '';
 var facetValSelected = '';
@@ -130,6 +127,7 @@ function handleFacetClick(e) {
 }
 
 function renderFacets($facet_container, results) {
+	console.log('resulllt', results)
   var facets = results.facets.map(function(facet) {
     var name = facet.name;
     
