@@ -92,6 +92,7 @@ algoliaHelper.on('result', function(content, state) {
 });
 //--------------------------------
 
+
 function searchCallback (content, state) {
   	
   	if (content.hits.length === 0) {
@@ -112,8 +113,7 @@ function searchCallback (content, state) {
 
 // faceting
 var $facet_container = $('.algolia-facets-container')
-var facetAttrSelected = '';
-var facetValSelected = '';
+var facetValSelected = {insurancesAccepted: [], county: [], categories: []};
 
 function handleFacetClick(e) {
   e.preventDefault();
@@ -121,16 +121,24 @@ function handleFacetClick(e) {
   var attribute = target.dataset.attribute;
   var value = target.dataset.value;
   if(!attribute || !value) return;
-  algoliaHelper.toggleRefine(attribute, value).search();
-  facetAttrSelected = attribute
-  facetValSelected = value
+  if (facetValSelected[attribute].length > 0) {
+  	if (value == facetValSelected[attribute][0]) {
+  		algoliaHelper.clearRefinements(attribute).search();
+  		facetValSelected[attribute] = []
+  	} else {
+  		facetValSelected[attribute] = [value]
+  		algoliaHelper.clearRefinements(attribute).toggleRefine(attribute, value).search();
+  	}
+  } else {
+  	algoliaHelper.toggleRefine(attribute, value).search();
+  	facetValSelected[attribute].push(value)
+  }
 }
 
 function renderFacets($facet_container, results) {
-	console.log('resulllt', results)
   var facets = results.facets.map(function(facet) {
     var name = facet.name;
-    
+	
   	// button style
   	var styles = {
   		insurancesAccepted: {name: 'Insurance', style: 'danger'},
@@ -146,13 +154,12 @@ function renderFacets($facet_container, results) {
       
     })
 
-    // if (facetAttrSelected) {
     if (styles[name]) {
-    	// console.log('a', facetAttrSelected, 's', facetValSelected, 'n', name)
 	  	var button_selected_html = ''; 
 
-	  	if (facetAttrSelected == name) {
-	  		button_selected_html = facetValSelected ? facetValSelected : styles[name].name;
+	  	selectedAtt = facetValSelected[name]
+	  	if (selectedAtt.length > 0) {
+	  		button_selected_html = facetValSelected[name][0];
 	  	} else {
 	  		button_selected_html = styles[name].name
 	  	}
@@ -170,18 +177,8 @@ function renderFacets($facet_container, results) {
 
 	    return buttonHtml;    	
     }
-
-
-    // return header + '<select class="facets">' + facetsValuesList.join('') + '</select>';
   });
-
-	facetAttrSelected = '';
-	facetValSelected = '';
   $facet_container.html(facets);	
-  // $facet_container.html(facets.join(''));
 }
-
-
-
 
 });
