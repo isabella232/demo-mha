@@ -4,14 +4,13 @@ var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_050117';
 var PARAMS = { 
-	hitsPerPage: 20,
+	hitsPerPage: 10,
 	facets: ['insurancesAccepted', 'specialPopulations', 'coverage', 'county', 'categories'] 
 };
 
 // Client + Helper initialization
 var algolia = algoliasearch(APPLICATION_ID, SEARCH_ONLY_API_KEY);
 var algoliaHelper = algoliasearchHelper(algolia, INDEX_NAME, PARAMS);
-
 
 algoliaHelper.on('result', searchCallback);
 
@@ -24,9 +23,8 @@ $inputfield.keyup(function(e) {
   algoliaHelper.setQuery($inputfield.val()).search();
 });
 
+// Render Results
 function renderResults ($results_container, results_data) {
-
-
 	var results =  results_data.hits.map(function renderHit(hit) {
 		var highlighted = hit._highlightResult;
 		return (
@@ -52,7 +50,54 @@ function renderResults ($results_container, results_data) {
 		);
 	})
 
+	var currPage = algoliaHelper.getPage()
+
+	var previousPage = currPage ? '<li class="page-item" id="previousPage">'+
+'      <a class="page-link" href="#" aria-label="Previous">'+
+'        <span aria-hidden="true">&laquo;</span>'+
+'        <span class="sr-only">Previous</span>'+
+'      </a>'+
+'    </li>' : '';
+
+	var nextPage = '<li class="page-item" id="nextPage">'+
+'      <a class="page-link" href="#" aria-label="Next">'+
+'        <span aria-hidden="true">&raquo;</span>'+
+'        <span class="sr-only">Next</span>'+
+'      </a>'+
+'    </li>';
+
+	var pagination = '<nav aria-label="Page navigation example">'+
+'  <ul class="pagination">'+  previousPage + nextPage +
+'  </ul>'+
+'</nav>';
+
 	$results_container.html(results);
+
+	$('#previousPage').on('click', getPreviousPage)
+	$('#nextPage').on('click', getNextPage)
+}
+
+function getNextPage() {
+	var currPage = algoliaHelper.getPage()
+	algoliaHelper.setPage(currPage).nextPage().search()
+}
+
+function getPreviousPage() {
+	var currPage = algoliaHelper.getPage()
+	algoliaHelper.setPage(currPage).previousPage().search()
+}
+
+function searchCallback (content, state) {
+  	if (content.hits.length === 0) {
+	    // If there is no result we display a friendly message
+	    // instead of an empty page.
+	    $results_container.empty().html("No results");
+	    return;
+	 }
+	renderResults($results_container, content);
+	renderFacets($facet_container, content);
+	var $facets = $('.facets');
+	$facets.on('click', handleFacetClick);
 }
 
 //marker 
@@ -61,7 +106,6 @@ algoliaHelper.on('result', function(content, state) {
 	//initialize map
 	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 5, maxZoom: 20 });
 	var markers = [];
-
     
 	// Add the markers to the map
 	for (var i = 0; i < content.hits.length; ++i) {
@@ -90,26 +134,6 @@ algoliaHelper.on('result', function(content, state) {
     });
 
 });
-//--------------------------------
-
-
-function searchCallback (content, state) {
-  	
-  	if (content.hits.length === 0) {
-	    // If there is no result we display a friendly message
-	    // instead of an empty page.
-	    $results_container.empty().html("No results");
-	    return;
-	 }
-
-	renderResults($results_container, content);
-	renderFacets($facet_container, content);
-	var $facets = $('.facets');
-	$facets.on('click', handleFacetClick);
-
-}
-
-//------------------------------------------------------------------------
 
 // faceting
 var $facet_container = $('.algolia-facets-container')
@@ -146,7 +170,9 @@ function renderFacets($facet_container, results) {
   		categories: {name: 'Special Populations', style: 'success'},
   	}
 
-    var facetValues = results.getFacetValues(name);
+    var facetValues = results.getFacetValues(name).sort(function(a,b){
+    	return a.name - b.name
+    });
 
     var facetsValuesList = $.map(facetValues, function(facetValue) {
       var facetValueClass = facetValue.isRefined ? 'refined'  : '';
