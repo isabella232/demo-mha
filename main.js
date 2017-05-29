@@ -2,15 +2,21 @@ $(window).load(function(){
 
 var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
-var INDEX_NAME = 'nycwell_050117';
+var INDEX_NAME = 'nycwell_052317';
 var PARAMS = { 
 	hitsPerPage: 10,
-	facets: ['insurancesAccepted', 'specialPopulations', 'coverage', 'county', 'categories'] 
+	facets: ['insurancesAccepted', 'specialPopulations', 'county', 'ageGroup'] 
 };
+
 
 // Client + Helper initialization
 var algolia = algoliasearch(APPLICATION_ID, SEARCH_ONLY_API_KEY);
 var algoliaHelper = algoliasearchHelper(algolia, INDEX_NAME, PARAMS);
+
+var index = algolia.initIndex(INDEX_NAME)
+index.getSettings(function(err, content) {
+	console.log(err, content)
+})
 
 algoliaHelper.on('result', searchCallback);
 
@@ -137,7 +143,7 @@ algoliaHelper.on('result', function(content, state) {
 
 // faceting
 var $facet_container = $('.algolia-facets-container')
-var facetValSelected = {insurancesAccepted: [], county: [], categories: []};
+var facetValSelected = {insurancesAccepted: [], county: [], specialPopulations: [], ageGroup: []};
 
 function handleFacetClick(e) {
   e.preventDefault();
@@ -160,18 +166,24 @@ function handleFacetClick(e) {
 }
 
 function renderFacets($facet_container, results) {
+  var facet_html_arr = [];
+
   var facets = results.facets.map(function(facet) {
     var name = facet.name;
 	
   	// button style
   	var styles = {
   		insurancesAccepted: {name: 'Insurance', style: 'danger'},
-  		county: {name: 'Borough', style: 'warning'},
-  		categories: {name: 'Special Populations', style: 'success'},
+  		county: {name: 'Borough', style: 'primary'},
+  		specialPopulations: {name: 'Special Populations', style: 'success'},
+  		ageGroup: {name: 'Age', style: 'info'},
   	}
 
+  	// console.log('face',results.getFacetValues(name))
     var facetValues = results.getFacetValues(name).sort(function(a,b){
-    	return a.name - b.name
+    	if (a.name < b.name) return -1;
+    	if (a.name > b.name) return 1;
+    	return 0;
     });
 
     var facetsValuesList = $.map(facetValues, function(facetValue) {
@@ -184,6 +196,7 @@ function renderFacets($facet_container, results) {
 	  	var button_selected_html = ''; 
 
 	  	selectedAtt = facetValSelected[name]
+
 	  	if (selectedAtt.length > 0) {
 	  		button_selected_html = facetValSelected[name][0];
 	  	} else {
