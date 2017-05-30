@@ -4,8 +4,8 @@ var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
 var PARAMS = { 
-	hitsPerPage: 10,
-	facets: ['county', 'specialPopulations', 'insurancesAccepted', 'ageGroup'] 
+	hitsPerPage: 3,
+	facets: ['county', 'specialPopulations', 'insurancesAccepted', 'ageGroup', 'type'] 
 };
 
 
@@ -40,17 +40,13 @@ function renderResults ($results_container, results_data) {
 			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
 			    '</div>'+
 			    '<div class="algolia-result-content">'+
-			        '<p class="algolia-result-content-type">Clinic</p>'+
 			        '<p class="algolia-result-content-name">'+highlighted.programName.value+'</p>'+
 			        '<p class="algolia-result-content-address">'+
-			            '<span>'+hit.street+'</span>'+
-			            '<span>'+hit.city+' , '+hit.state+' '+hit.zip+'</span>'+
+			            '<span>'+hit.street+' , '+hit.city+' , '+hit.state+' '+hit.zip+'</span>'+
+			            
 			        '</p>'+
 			        '<p class="algolia-result-content-tel">'+
-			            '<span>Tel: </span><span>'+hit.phone+'</span>'+
-			        '</p>'+
-			        '<p class="algolia-result-content-availability">'+
-			            '<span class="open">Open</span>'+
+			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
 			        '</p>'+
 			    '</div>'+
 			'</div>'
@@ -70,16 +66,17 @@ function renderResults ($results_container, results_data) {
 	var nextPage = '';
 	
 
-	if (results_data.hits.length >=10) {
-		var totalPagesAvail = results_data.nbHits/10
-		var numPage = currPage + 4;
-		
-		if (totalPagesAvail <= numPage) numPage = totalPagesAvail;
-		
-		for (var i=numPage-4; i<=numPage; i++) {
+	var totalPagesAvail = results_data.nbHits/3
+	var numPage = currPage + 4;
+	
+	if (totalPagesAvail <= numPage) numPage = totalPagesAvail;
+	
+	for (var i=numPage-4; i<=numPage; i++) {
+		if (i >= 0) {
 			page = Math.floor(i+1)
 			pages += '<li class="pages"><a href="#">'+page+'</a></li>';
 		}
+	}
 		
 		nextPage = '<li class="page-item" id="nextPage">'+
 	'      <a class="page-link" href="#" aria-label="Next">'+
@@ -88,7 +85,7 @@ function renderResults ($results_container, results_data) {
 	'      </a>'+
 	'    </li>';
 	
-	}
+	
 
 	var pagination = '<nav aria-label="Page navigation example">'+
 '  <ul class="pagination">'+  previousPage + pages + nextPage +
@@ -168,7 +165,7 @@ algoliaHelper.on('result', function(content, state) {
 
 // faceting
 var $facet_container = $('.algolia-facets-container')
-var facetValSelected = {insurancesAccepted: [], county: [], specialPopulations: [], ageGroup: []};
+var facetValSelected = {insurancesAccepted: [], county: [], specialPopulations: [], ageGroup: [], type: []};
 
 function handleFacetClick(e) {
   e.preventDefault();
@@ -204,6 +201,11 @@ function handleFacetClick(e) {
   if (attribute == 'ageGroup') {
 	$('#btn-ageGroup-dropdown-name').html(value)
   }
+
+  if (attribute == 'type') {
+  	$("#btn-type-dropdown-name").html(value)
+  }
+  	
 
 }
 
@@ -242,6 +244,10 @@ function renderFacets($facet_container, results) {
     if (name == 'ageGroup') {
     	$('#btn-ageGroup-dropdown-menu').html(facetList)
     }
+
+    if (name == 'type') {
+	  	$("#btn-type-dropdown-menu").html(facetList)
+	  }
 
   });
 }
