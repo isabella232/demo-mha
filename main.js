@@ -32,7 +32,6 @@ $inputfield.keyup(function(e) {
 
 // Render Results
 function renderResults ($results_container, results_data) {
-	console.log(results_data.nbHits,'ttt')
 	var results =  results_data.hits.map(function renderHit(hit) {
 		var highlighted = hit._highlightResult;
 		return (
@@ -72,9 +71,11 @@ function renderResults ($results_container, results_data) {
 	
 
 	if (results_data.hits.length >=10) {
-		totalPagesAvail = results_data.nbHits/10
+		var totalPagesAvail = results_data.nbHits/10
 		var numPage = currPage + 4;
+		
 		if (totalPagesAvail <= numPage) numPage = totalPagesAvail;
+		
 		for (var i=numPage-4; i<=numPage; i++) {
 			page = Math.floor(i+1)
 			pages += '<li class="pages"><a href="#">'+page+'</a></li>';
