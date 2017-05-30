@@ -207,6 +207,20 @@
                 	<!-- input box -->
                  	<input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
 
+                 	<!-- type dropdown -->
+					<div class="btn-group">
+					  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-type-dropdown-name">
+					    choose one</span>
+					  </button>
+					  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
+					  	<span class="caret"></span>
+					    <span class="sr-only">Toggle Dropdown</span>
+					  </button>
+					  <div class="dropdown-menu" id="btn-type-dropdown-menu">
+					    ...
+					  </div>
+					</div>
+
                  	<!-- borough dropdown -->
 					<div class="btn-group">
 					  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-borough-dropdown-name">
@@ -225,8 +239,8 @@
                  	<div class="algolia-facets-container">
                  		<!-- special population -->
                  		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn" style="background-color: #449D44; color: white;"><span id="btn-specialPopulation-dropdown-name">Special Population</span></button>
-						  <button type="button" class="btn dropdown-toggle" style="background-color: #449D44; color: white;"data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
+						  <button type="button" class="btn facet-btn facet-specialPopulation"><span id="btn-specialPopulation-dropdown-name">Special Population</span></button>
+						  <button type="button" class="btn dropdown-toggle facet-specialPopulation" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
 						    <span class="caret"></span>
 						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
@@ -235,8 +249,8 @@
 						
 						<!-- insurance -->
                  		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn" style="background-color: #C9302C; color: white;"><span id="btn-insurance-dropdown-name">Insurance</span></button>
-						  <button type="button" class="btn dropdown-toggle" style="background-color: #C9302C; color: white;"data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
+						  <button type="button" class="btn facet-btn facet-insurance"><span id="btn-insurance-dropdown-name">Insurance</span></button>
+						  <button type="button" class="btn dropdown-toggle facet-insurance" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
 						    <span class="caret"></span>
 						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
@@ -244,8 +258,8 @@
 						</div>
 						<!-- age -->
                  		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn" style="background-color: #337AB7; color: white;"><span id="btn-ageGroup-dropdown-name">Age</span></button>
-						  <button type="button" class="btn dropdown-toggle" style="background-color: #337AB7; color: white;" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
+						  <button type="button" class="btn facet-btn facet-age"><span id="btn-ageGroup-dropdown-name">Age</span></button>
+						  <button type="button" class="btn dropdown-toggle facet-age" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
 						    <span class="caret"></span>
 						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
