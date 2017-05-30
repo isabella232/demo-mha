@@ -204,44 +204,83 @@
 				
 			<div class="container">
                 <div class="algolia-input-container">
-                    <input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
+                	<!-- input box -->
+                 	<input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
+
+                 	<!-- borough dropdown -->
+					<div class="btn-group">
+					  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-borough-dropdown-name">
+					    borough</span>
+					  </button>
+					  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
+					  	<span class="caret"></span>
+					    <span class="sr-only">Toggle Dropdown</span>
+					  </button>
+					  <div class="dropdown-menu" id="btn-borough-dropdown-menu">
+					    ...
+					  </div>
+					</div>
+                 	
+                 	<!-- facet -->
+                 	<div class="algolia-facets-container">
+                 		<!-- special population -->
+                 		<div class="btn-group algolia-facets-item">
+						  <button type="button" class="btn" style="background-color: #449D44; color: white;"><span id="btn-specialPopulation-dropdown-name">Special Population</span></button>
+						  <button type="button" class="btn dropdown-toggle" style="background-color: #449D44; color: white;"data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
+						    <span class="caret"></span>
+						    <span class="sr-only">Toggle Dropdown</span>
+						  </button>
+						  <ul class="dropdown-menu" id="btn-specialPopulation-dropdown-menu"></ul>
+						</div>
+						
+						<!-- insurance -->
+                 		<div class="btn-group algolia-facets-item">
+						  <button type="button" class="btn" style="background-color: #C9302C; color: white;"><span id="btn-insurance-dropdown-name">Insurance</span></button>
+						  <button type="button" class="btn dropdown-toggle" style="background-color: #C9302C; color: white;"data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
+						    <span class="caret"></span>
+						    <span class="sr-only">Toggle Dropdown</span>
+						  </button>
+						  <ul class="dropdown-menu" id="btn-insurance-dropdown-menu"></ul>
+						</div>
+						<!-- age -->
+                 		<div class="btn-group algolia-facets-item">
+						  <button type="button" class="btn" style="background-color: #337AB7; color: white;"><span id="btn-ageGroup-dropdown-name">Age</span></button>
+						  <button type="button" class="btn dropdown-toggle" style="background-color: #337AB7; color: white;" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
+						    <span class="caret"></span>
+						    <span class="sr-only">Toggle Dropdown</span>
+						  </button>
+						  <ul class="dropdown-menu" id="btn-ageGroup-dropdown-menu"></ul>
+						</div>
+
+                 	</div>
                 </div>
+                
                 <div class="algolia-wrapper">
+
                     <div class="algolia-wrapper-sidebar">
                         <div class="algolia-sort-container">
-                            <p class="algolia-sort-active">Distance</p>
+                            <p class="algolia-sort-active">Mental Health</p>
                         </div>
-                        <div class="algolia-results">
-                            <!-- 1 result -->
-                            <!-- <div class="algolia-result">
-                                <div class="algolia-result-share-container">
-                                    <img class="algolia-result-share-icon" src="share-icon.png">
-                                </div>
-                                <div class="algolia-result-content">
-                                    <p class="algolia-result-content-type">Clinic</p>
-                                    <p class="algolia-result-content-name">Mental Health Providers of West Queens</p>
-                                    <p class="algolia-result-content-address">
-                                        <span>44-04 Queens Boulevard, 2nd Flr.</span>
-                                        <span>Sunnyside, NY 11104</span>
-                                    </p>
-                                    <p class="algolia-result-content-tel">
-                                        <span>Tel: </span><span>(718) 706-1663</span>
-                                    </p>
-                                    <p class="algolia-result-content-availability">
-                                        <span class="open">Open</span>
-                                    </p>
-                                </div>
-                            </div> -->
-                            <!-- 1 result -->
-                        </div>
+                        
+                        <!-- search results -->
+                        <div class="algolia-results"></div>
+
+                        <!-- pagination -->
+                    	<div class="algolia-pagination"></div>
+                        
+                        
                     </div>
+                        
                     <div class="algolia-wrapper-main">
                     	
-                        <div class="algolia-facets-container">
-                        </div>
 
-                        <div class="algolia-map-container"><div id="map"></div></div>
+                        <div class="algolia-map-container"><div id="map"></div>
+                        
                         <div><a href="https://docs.google.com/spreadsheets/d/1NRxtS4wNkWwee4v5fuWpPC9XRN3YKT8_CYDhfTfdf2I/edit#gid=0">#17</a></div>
+
+                        </div>
+                        
+
                     </div>
                     
                 </div>
