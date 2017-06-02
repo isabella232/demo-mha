@@ -109,20 +109,35 @@ function renderResults ($results_container, results_data) {
 //TODO: Data persistance
 function rateResult(e){
 	var target = e.currentTarget;
+	$(target).parent().addClass('checked')
+
 	var parentForm = $(target).parents('form');
 	var rawID = parentForm.attr('id');
 	var resultDiv= $(parentForm).prev('.algolia-result')[0]
 	var resultContent = $(resultDiv).find('p.algolia-result-content-name')
 
 	var data = {
-		'starRating': target.value,
-		'searchRank': $(resultContent).data('hit'),
-		'objectID': rawID.substring(rawID.indexOf('-') + 1),  //Remove the "rating-" prefix from the ID
-		'humanReadableName': $(resultContent).text(),
-		'queryString': $inputfield.val()
+		"starRating": target.value,
+		"searchRank": $(resultContent).data('hit'),
+		"objectID": rawID.substring(rawID.indexOf('-') + 1),  //Remove the "rating-" prefix from the ID
+		"humanReadableName": $(resultContent).text(),
+		"queryString": $inputfield.val()
 	}
+	postUrl = 'https://script.google.com/macros/s/AKfycbwbyKjcl-dQ8XACgoRRReEI0Zvt_tkTlrVOxgOK43nsLDs9Dsg/exec'
+	console.log(data);
+	$.ajax({
+		type: "POST",
+		url: postUrl,
+		data: data,
+		dataType: 'json',
+		error: function(e){
+			console.log(e)
+		},
+		success: function(r){
+			console.log(r)
+		}
+	})
 
-	return data;
 }
 
 function fillResultModal(e) {
