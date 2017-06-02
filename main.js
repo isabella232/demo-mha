@@ -35,14 +35,12 @@ $inputfield.keyup(function(e) {
 // Render Results
 function renderResults ($results_container, results_data) {
 	result_data = results_data.hits
-
 	var results =  results_data.hits.map(function renderHit(hit, i) {
 
 		var highlighted = hit._highlightResult;
-
 		var address = hit.street !== ' ' ? hit.street+'  '+hit.city+'  '+hit.state+'  '+hit.zip : ''
 		return (
-			'<div class="algolia-result">'+
+			'<div class="algolia-result" style="clear:left;">'+
 			    '<div class="algolia-result-share-container">'+
 			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
 			    '</div>'+
@@ -56,7 +54,16 @@ function renderResults ($results_container, results_data) {
 			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
 			        '</p>'+
 			    '</div>'+
-			'</div>'
+			'</div>'+
+			'<form class="rating-form" id="rating-'+ hit.objectID + '">' + 
+				'<div class="rating">' +
+					'<span><input type="radio" name="rating" id="str-' +hit.objectID + '-5" value="5"><label for="str-' +hit.objectID + '-5"></label></span>' +
+					'<span><input type="radio" name="rating" id="str-' +hit.objectID + '-4" value="4"><label for="str-' +hit.objectID + '-4"></label></span>' +
+					'<span><input type="radio" name="rating" id="str-' +hit.objectID + '-3" value="3"><label for="str-' +hit.objectID + '-3"></label></span>' +
+					'<span><input type="radio" name="rating" id="str-' +hit.objectID + '-2" value="2"><label for="str-' +hit.objectID + '-2"></label></span>' +
+					'<span><input type="radio" name="rating" id="str-' +hit.objectID + '-1" value="1"><label for="str-' +hit.objectID + '-1"></label></span>' +
+				'</div>' +
+			'</form>'
 		);
 	})
 
@@ -94,6 +101,28 @@ function renderResults ($results_container, results_data) {
 
 	$('.algolia-showMore').on('click', showMore)
 	$('.algolia-result-content').on('click', fillResultModal)
+
+	$('.rating input').on('click', rateResult)
+}
+
+//Allow for user ranking of results, and collect data regarding the query and search parameters
+//TODO: Data persistance
+function rateResult(e){
+	var target = e.currentTarget;
+	var parentForm = $(target).parents('form');
+	var rawID = parentForm.attr('id');
+	var resultDiv= $(parentForm).prev('.algolia-result')[0]
+	var resultContent = $(resultDiv).find('p.algolia-result-content-name')
+
+	var data = {
+		'starRating': target.value,
+		'searchRank': $(resultContent).data('hit'),
+		'objectID': rawID.substring(rawID.indexOf('-') + 1),  //Remove the "rating-" prefix from the ID
+		'humanReadableName': $(resultContent).text(),
+		'queryString': $inputfield.val()
+	}
+
+	return data;
 }
 
 function fillResultModal(e) {

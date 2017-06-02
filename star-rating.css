@@ -1,0 +1,27 @@
+.rating-form {
+    position: relative;
+    margin-left: 30px;
+    float: left;
+}
+.rating span { float:right; position:relative; }
+.rating span input {
+    opacity:0;
+}
+.rating span label {
+    width:10px;
+    height:10px;
+    color:#FFF;
+    background:#ccc;
+    font-size:10px;
+    margin-right:2px;
+    margin-bottom: 30px;
+    line-height:10px;
+    border-radius:50%;
+}
+.rating span:hover ~ span label,
+.rating span:hover label,
+.rating span.checked label,
+.rating span.checked ~ span label {
+    background:#F90;
+    color:#FFF;
+}
