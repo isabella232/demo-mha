@@ -208,7 +208,7 @@
                  	<input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
 
                  	<!-- type dropdown -->
-					<div class="btn-group">
+					<!-- <div class="btn-group">
 					  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-type-dropdown-name">
 					    choose one</span>
 					  </button>
@@ -219,21 +219,7 @@
 					  <div class="dropdown-menu" id="btn-type-dropdown-menu">
 					    ...
 					  </div>
-					</div>
-
-                 	<!-- borough dropdown -->
-					<div class="btn-group">
-					  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-borough-dropdown-name">
-					    borough</span>
-					  </button>
-					  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
-					  	<span class="caret"></span>
-					    <span class="sr-only">Toggle Dropdown</span>
-					  </button>
-					  <div class="dropdown-menu" id="btn-borough-dropdown-menu">
-					    ...
-					  </div>
-					</div>
+					</div> -->
                  	
                  	<!-- facet -->
                  	<div class="algolia-facets-container">
@@ -265,6 +251,19 @@
 						  </button>
 						  <ul class="dropdown-menu" id="btn-ageGroup-dropdown-menu"></ul>
 						</div>
+						<!-- borough dropdown -->
+						<div class="btn-group">
+						  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-borough-dropdown-name">
+						    borough</span>
+						  </button>
+						  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
+						  	<span class="caret"></span>
+						    <span class="sr-only">Toggle Dropdown</span>
+						  </button>
+						  <div class="dropdown-menu" id="btn-borough-dropdown-menu">
+						    ...
+						  </div>
+						</div>
 
                  	</div>
                 </div>
@@ -272,9 +271,9 @@
                 <div class="algolia-wrapper">
 
                     <div class="algolia-wrapper-sidebar">
-                        <div class="algolia-sort-container">
+                        <!-- <div class="algolia-sort-container">
                             <p class="algolia-sort-active">Mental Health</p>
-                        </div>
+                        </div> -->
                         
                         <!-- search results -->
                         <div class="algolia-results"></div>
@@ -284,7 +283,53 @@
                         
                         
                     </div>
-                        
+
+                    <!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-programName" id="myModalLabel"></h4>
+      </div>
+      <div class="modal-body">
+        <p class="modal-address"></p>
+        <p>Disability Access: <span class="modal-disability"></span></p>
+        <p class="modal-website"></p>
+        <p class="modal-email"></p>
+        <p>Tel: <span class="modal-tel"></span></p>
+
+        <table>
+	        <tr>
+	        	<td class="modal-h">Eligibility</td>
+	        	<td class="modal-b modal-eligibility"></td>
+	        </tr>
+	        
+	        <tr>
+	        	<td class="modal-h">Languages</td>
+	        	<td class="modal-b modal-language"></td>
+	        </tr>
+	        
+	        <tr>
+	        	<td class="modal-h">Hours</td>
+	        	<td class="modal-b modal-hours"></td>
+	        </tr>
+	        <tr>
+	        	<td class="modal-h">Insurance Accepted</td>
+	        	<td class="modal-b modal-insurance"></td>
+	        </tr>
+        </table>
+        <br>
+        <p class="modal-description"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+                    <!-- wrapper     -->
                     <div class="algolia-wrapper-main">
                     	
 
