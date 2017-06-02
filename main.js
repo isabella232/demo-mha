@@ -26,21 +26,26 @@ var $results_container = $(".algolia-results");
 var $inputfield = $(".algolia-input-search");
 var $pagination = $(".algolia-pagination");
 
+var result_data = [];
+
 $inputfield.keyup(function(e) {
   algoliaHelper.setQuery($inputfield.val()).search();
 });
 
 // Render Results
 function renderResults ($results_container, results_data) {
-	var results =  results_data.hits.map(function renderHit(hit) {
+	result_data = results_data.hits
+
+	var results =  results_data.hits.map(function renderHit(hit, i) {
+		console.log(hit,i)
 		var highlighted = hit._highlightResult;
 		return (
 			'<div class="algolia-result">'+
 			    '<div class="algolia-result-share-container">'+
 			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
 			    '</div>'+
-			    '<div class="algolia-result-content">'+
-			        '<p class="algolia-result-content-name">'+highlighted.programName.value+'</p>'+
+			    '<div class="algolia-result-content" data-toggle="modal" data-target="#myModal">'+
+			        '<p class="algolia-result-content-name" data-hit="'+i+'">'+highlighted.programName.value+'</p>'+
 			        '<p class="algolia-result-content-address">'+
 			            '<span>'+hit.street+' , '+hit.city+' , '+hit.state+' '+hit.zip+'</span>'+
 			            
@@ -56,48 +61,74 @@ function renderResults ($results_container, results_data) {
 	var currPage = algoliaHelper.getPage()
 
 	var previousPage = currPage ? '<li class="page-item" id="previousPage">'+
-'      <a class="page-link" href="#" aria-label="Previous">'+
-'        <span aria-hidden="true">&laquo;</span>'+
-'        <span class="sr-only">Previous</span>'+
+'      <a class="page-link" href="#" aria-label="Previous"> Previous'+
+// '        <span aria-hidden="true">&laquo;</span>'+
+// '        <span class="sr-only">Previous</span>'+
 '      </a>'+
 '    </li>' : '';
 	
-	var pages = '';
+// 	var pages = '';
 	var nextPage = '';
 	
 
-	var totalPagesAvail = results_data.nbHits/3
-	var numPage = currPage + 4;
+// 	var totalPagesAvail = results_data.nbHits/3
+// 	var numPage = currPage + 4;
 	
-	if (totalPagesAvail <= numPage) numPage = totalPagesAvail;
+// 	if (totalPagesAvail <= numPage) numPage = totalPagesAvail;
 	
-	for (var i=numPage-4; i<=numPage; i++) {
-		if (i >= 0) {
-			page = Math.floor(i+1)
-			pages += '<li class="pages"><a href="#">'+page+'</a></li>';
-		}
-	}
+// 	for (var i=numPage-4; i<=numPage; i++) {
+// 		if (i >= 0) {
+// 			page = Math.floor(i+1)
+// 			pages += '<li class="pages"><a href="#">'+page+'</a></li>';
+// 		}
+// 	}
 		
 		nextPage = '<li class="page-item" id="nextPage">'+
-	'      <a class="page-link" href="#" aria-label="Next">'+
-	'        <span aria-hidden="true">&raquo;</span>'+
-	'        <span class="sr-only">Next</span>'+
+	'      <a class="page-link" href="#" aria-label="Next"> Next'+
+	// '        <span aria-hidden="true">&raquo;</span>'+
+	// '        <span class="sr-only">Next</span>'+
 	'      </a>'+
 	'    </li>';
 	
 	
 
 	var pagination = '<nav aria-label="Page navigation example">'+
-'  <ul class="pagination">'+  previousPage + pages + nextPage +
+'  <ul class="pagination">'+  previousPage + nextPage +
 '  </ul>'+
 '</nav>';
+	
+	// var pagination = '<button class="btn btn-primary" id="showMore">Show More</button>';
 
 	$results_container.html(results);
 	$pagination.html(pagination);
 
+	$('#showMore').on('click', showMore)
 	$('#previousPage').on('click', getPreviousPage)
 	$('#nextPage').on('click', getNextPage)
-	$('.pages').on('click', getSpecificPage)
+	// $('.pages').on('click', getSpecificPage)
+
+	$('.algolia-result-content').on('click', fillResultModal)
+}
+
+function fillResultModal(e) {
+	var hitIndex = $(e.target).data( "hit" );
+	var data = result_data[hitIndex]; 
+	console.log('jo',data)
+	$('.modal-programName').html(data.programName)
+	$('.modal-address').html(data.street + ' ' + data.state + ' ' + data.zip)
+	$('.modal-website').html('<a href="'+data.website+'">'+data.website+'</a>')
+	$('.modal-email').html('<a>'+data.email+'</a>')
+	$('.modal-tel').html('<a>'+data.phone.join(', ')+'</a>')
+	$('.modal-description').html(data.description)
+	$('.modal-eligibility').html(data.eligibility)
+	$('.modal-insurance').html(data.insurancesAccepted.join(', '))
+	$('.modal-language').html(data.languages.join(', '))
+	$('.modal-hours').html(data.hours.join('<br>'))
+	$('.modal-disability').html(data.wheelchair)
+}
+
+function showMore() {
+	
 }
 
 function getNextPage() {

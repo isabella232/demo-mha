@@ -1,3 +1,7 @@
+.modal-b {
+  padding: 15px;
+}
+
 .algolia-input-container {
   text-align: center;
   margin: 40px auto 30px auto; }
@@ -6,7 +10,7 @@
   padding: 13px 18px;
   border: 1px solid #ccc;
   width: 100%;
-  max-width: 300px;
+  max-width: 700px;
   font-size: 18px;
   border-radius: 4px; }
 
