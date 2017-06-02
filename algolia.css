@@ -2,6 +2,10 @@
   padding: 15px;
 }
 
+.refined {
+  text-decoration: line-through;
+}
+
 .algolia-input-container {
   text-align: center;
   margin: 40px auto 30px auto; }
@@ -21,22 +25,6 @@
       display: block;
     }
   }
-
-#btn-borough {
-  padding: 14px 30px;
-  border: 1px solid #ccc;
-  font-size: 18px;
-  border-radius: 4px;
-  color: grey;
-  background-color: white; 
-  border-color: lightgrey;
-}
-
-#btn-borough-secondary {
-  background-color:white; 
-  border-color: lightgrey;
-  padding: 14px 13px;
-}
 
 .algolia-wrapper {
   display: -webkit-box;
@@ -91,6 +79,23 @@
     color: white;
     font-size: 18px;
     padding: 11px 20px;
+  }
+
+  .facet-borough {
+    padding: 14px 30px;
+    padding-left: 10px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    border-radius: 4px;
+    color: grey;
+    background-color: white; 
+    border-color: lightgrey;
+  }
+
+  .facet-borough-secondary {
+    background-color:white; 
+    border-color: lightgrey;
+    padding: 14px 13px;
   }
 
 @media (max-width: 1000px) {

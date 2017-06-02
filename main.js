@@ -4,7 +4,7 @@ var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
 var PARAMS = { 
-	hitsPerPage: 3,
+	hitsPerPage: 4,
 	facets: ['county', 'specialPopulations', 'insurancesAccepted', 'ageGroup', 'type'] 
 };
 
@@ -37,8 +37,10 @@ function renderResults ($results_container, results_data) {
 	result_data = results_data.hits
 
 	var results =  results_data.hits.map(function renderHit(hit, i) {
-		console.log(hit,i)
+
 		var highlighted = hit._highlightResult;
+
+		var address = hit.street !== ' ' ? hit.street+'  '+hit.city+'  '+hit.state+'  '+hit.zip : ''
 		return (
 			'<div class="algolia-result">'+
 			    '<div class="algolia-result-share-container">'+
@@ -47,7 +49,7 @@ function renderResults ($results_container, results_data) {
 			    '<div class="algolia-result-content" data-toggle="modal" data-target="#myModal">'+
 			        '<p class="algolia-result-content-name" data-hit="'+i+'">'+highlighted.programName.value+'</p>'+
 			        '<p class="algolia-result-content-address">'+
-			            '<span>'+hit.street+' , '+hit.city+' , '+hit.state+' '+hit.zip+'</span>'+
+			            '<span>'+address+'</span>'+
 			            
 			        '</p>'+
 			        '<p class="algolia-result-content-tel">'+
@@ -62,36 +64,20 @@ function renderResults ($results_container, results_data) {
 
 	var previousPage = currPage ? '<li class="page-item" id="previousPage">'+
 '      <a class="page-link" href="#" aria-label="Previous"> Previous'+
-// '        <span aria-hidden="true">&laquo;</span>'+
-// '        <span class="sr-only">Previous</span>'+
 '      </a>'+
 '    </li>' : '';
 	
-// 	var pages = '';
 	var nextPage = '';
 	
+	// var totalPagesAvail = results_data.nbHits/3
 
-// 	var totalPagesAvail = results_data.nbHits/3
-// 	var numPage = currPage + 4;
-	
-// 	if (totalPagesAvail <= numPage) numPage = totalPagesAvail;
-	
-// 	for (var i=numPage-4; i<=numPage; i++) {
-// 		if (i >= 0) {
-// 			page = Math.floor(i+1)
-// 			pages += '<li class="pages"><a href="#">'+page+'</a></li>';
-// 		}
-// 	}
-		
+	if (results_data.hits.length == 4) {
 		nextPage = '<li class="page-item" id="nextPage">'+
 	'      <a class="page-link" href="#" aria-label="Next"> Next'+
-	// '        <span aria-hidden="true">&raquo;</span>'+
-	// '        <span class="sr-only">Next</span>'+
 	'      </a>'+
 	'    </li>';
+	}
 	
-	
-
 	var pagination = '<nav aria-label="Page navigation example">'+
 '  <ul class="pagination">'+  previousPage + nextPage +
 '  </ul>'+
@@ -105,8 +91,8 @@ function renderResults ($results_container, results_data) {
 	$('#showMore').on('click', showMore)
 	$('#previousPage').on('click', getPreviousPage)
 	$('#nextPage').on('click', getNextPage)
-	// $('.pages').on('click', getSpecificPage)
 
+	$('.algolia-showMore').on('click', showMore)
 	$('.algolia-result-content').on('click', fillResultModal)
 }
 
@@ -151,6 +137,7 @@ function searchCallback (content, state) {
 	    // If there is no result we display a friendly message
 	    // instead of an empty page.
 	    $results_container.empty().html("No results");
+	    $pagination.empty();
 	    return;
 	 }
 	renderResults($results_container, content);
@@ -197,6 +184,7 @@ algoliaHelper.on('result', function(content, state) {
 // faceting
 var $facet_container = $('.algolia-facets-container')
 var facetValSelected = {insurancesAccepted: [], county: [], specialPopulations: [], ageGroup: [], type: []};
+var facetValMap = {insurancesAccepted: 'Insurance', county: 'Borough', specialPopulations: 'Special Population', ageGroup: 'Age', type: []};
 
 function handleFacetClick(e) {
   e.preventDefault();
@@ -205,38 +193,26 @@ function handleFacetClick(e) {
   var value = target.dataset.value;
   if(!attribute || !value) return;
   if (facetValSelected[attribute].length > 0) {
+  	
+  	//If original value already selected --> clear facet
   	if (value == facetValSelected[attribute][0]) {
   		algoliaHelper.clearRefinements(attribute).search();
   		facetValSelected[attribute] = []
+  		$('#btn-'+attribute+'-dropdown-name').html(facetValMap[attribute])
+
+  	//Already selected facet --> toggle value
   	} else {
   		facetValSelected[attribute] = [value]
   		algoliaHelper.clearRefinements(attribute).toggleRefine(attribute, value).search();
+  		$('#btn-'+attribute+'-dropdown-name').html(value)
   	}
+
   } else {
+  	//Newly selected facet --> toggle value
   	algoliaHelper.toggleRefine(attribute, value).search();
   	facetValSelected[attribute].push(value)
+  	$('#btn-'+attribute+'-dropdown-name').html(value)
   }
-
-  if (attribute == 'county') {
-    $('#btn-borough-dropdown-name').html(value)
-   }
- 
-  if (attribute == 'insurancesAccepted') {
-	$('#btn-insurance-dropdown-name').html(value)
-  }
-
-  if (attribute == 'specialPopulations') {
-	$('#btn-specialPopulation-dropdown-name').html(value)
-  }
-
-  if (attribute == 'ageGroup') {
-	$('#btn-ageGroup-dropdown-name').html(value)
-  }
-
-  if (attribute == 'type') {
-  	$("#btn-type-dropdown-name").html(value)
-  }
-  	
 
 }
 
@@ -259,28 +235,10 @@ function renderFacets($facet_container, results) {
     })
 
     var facetList = facetsValuesList.join('')
-    
-    if (name == 'county') {
-    	$('#btn-borough-dropdown-menu').html(facetList)
-    }
- 
-    if (name == 'insurancesAccepted') {
-    	$('#btn-insurance-dropdown-menu').html(facetList)
-    }
 
-    if (name == 'specialPopulations') {
-    	$('#btn-specialPopulation-dropdown-menu').html(facetList)
-    }
-
-    if (name == 'ageGroup') {
-    	$('#btn-ageGroup-dropdown-menu').html(facetList)
-    }
-
-    if (name == 'type') {
-	  	$("#btn-type-dropdown-menu").html(facetList)
-	  }
-
+    $('#btn-'+name+'-dropdown-menu').html(facetList)
   });
+  
 }
 
 });
