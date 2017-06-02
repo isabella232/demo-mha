@@ -221,26 +221,28 @@
 					  </div>
 					</div> -->
                  	
+                 	<!-- {insurancesAccepted: [], county: [], specialPopulations: [], ageGroup: [], type: []}; -->
+
                  	<!-- facet -->
                  	<div class="algolia-facets-container">
                  		<!-- special population -->
                  		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-btn facet-specialPopulation"><span id="btn-specialPopulation-dropdown-name">Special Population</span></button>
+						  <button type="button" class="btn facet-btn facet-specialPopulation"><span id="btn-specialPopulations-dropdown-name">Special Population</span></button>
 						  <button type="button" class="btn dropdown-toggle facet-specialPopulation" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
 						    <span class="caret"></span>
 						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
-						  <ul class="dropdown-menu" id="btn-specialPopulation-dropdown-menu"></ul>
+						  <ul class="dropdown-menu" id="btn-specialPopulations-dropdown-menu"></ul>
 						</div>
 						
 						<!-- insurance -->
                  		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-btn facet-insurance"><span id="btn-insurance-dropdown-name">Insurance</span></button>
+						  <button type="button" class="btn facet-btn facet-insurance"><span id="btn-insurancesAccepted-dropdown-name">Insurance</span></button>
 						  <button type="button" class="btn dropdown-toggle facet-insurance" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
 						    <span class="caret"></span>
 						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
-						  <ul class="dropdown-menu" id="btn-insurance-dropdown-menu"></ul>
+						  <ul class="dropdown-menu" id="btn-insurancesAccepted-dropdown-menu"></ul>
 						</div>
 						<!-- age -->
                  		<div class="btn-group algolia-facets-item">
@@ -252,17 +254,16 @@
 						  <ul class="dropdown-menu" id="btn-ageGroup-dropdown-menu"></ul>
 						</div>
 						<!-- borough dropdown -->
-						<div class="btn-group">
-						  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-borough-dropdown-name">
-						    borough</span>
+						<div class="btn-group algolia-facets-item">
+						  <button class="btn btn-secondary btn-lg dropdown-toggle facet-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-county-dropdown-name">
+						    Borough</span>
 						  </button>
-						  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
+						  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split facet-borough-secondary" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
 						  	<span class="caret"></span>
 						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
-						  <div class="dropdown-menu" id="btn-borough-dropdown-menu">
-						    ...
-						  </div>
+						  <ul class="dropdown-menu" id="btn-county-dropdown-menu">
+						  </ul>
 						</div>
 
                  	</div>
@@ -280,6 +281,7 @@
 
                         <!-- pagination -->
                     	<div class="algolia-pagination"></div>
+                    	<div class="algolia-showMore"></div>
                         
                         
                     </div>
