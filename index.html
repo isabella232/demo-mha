@@ -225,50 +225,57 @@
 
                  	<!-- facet -->
                  	<div class="algolia-facets-container">
+                 		<!-- $('#btn-'+name+'-dropdown-menu').html(facetList) -->
+
                  		<!-- special population -->
                  		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-btn facet-specialPopulation"><span id="btn-specialPopulations-dropdown-name">Special Population</span></button>
-						  <button type="button" class="btn dropdown-toggle facet-specialPopulation" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
-						    <span class="caret"></span>
-						    <span class="sr-only">Toggle Dropdown</span>
+						  <button type="button" class="btn facet-specialPopulation dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  	Special Population <span id="specialPopulations-refinement-count"></span>
+						  	<span class="caret"></span>
 						  </button>
-						  <ul class="dropdown-menu" id="btn-specialPopulations-dropdown-menu"></ul>
+						  <ul class="dropdown-menu algolia-facets" id="btn-specialPopulations-dropdown-menu"></ul>
 						</div>
 						
 						<!-- insurance -->
-                 		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-btn facet-insurance"><span id="btn-insurancesAccepted-dropdown-name">Insurance</span></button>
-						  <button type="button" class="btn dropdown-toggle facet-insurance" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
-						    <span class="caret"></span>
-						    <span class="sr-only">Toggle Dropdown</span>
+						<div class="btn-group algolia-facets-item">
+						  <button type="button" class="btn facet-insurance dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  	Insurance <span id="insurancesAccepted-refinement-count"></span>
+						  	<span class="caret"></span>
 						  </button>
-						  <ul class="dropdown-menu" id="btn-insurancesAccepted-dropdown-menu"></ul>
+						  <ul class="dropdown-menu algolia-facets" id="btn-insurancesAccepted-dropdown-menu"></ul>
 						</div>
+
 						<!-- age -->
-                 		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-btn facet-age"><span id="btn-ageGroup-dropdown-name">Age</span></button>
-						  <button type="button" class="btn dropdown-toggle facet-age" data-toggle="dropdown" aria-haspopup="true" ria-expanded="false">
-						    <span class="caret"></span>
-						    <span class="sr-only">Toggle Dropdown</span>
+						<div class="btn-group algolia-facets-item">
+						  <button type="button" class="btn facet-age dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  	Age <span id="ageGroup-refinement-count"></span>
+						  	<span class="caret"></span>
 						  </button>
-						  <ul class="dropdown-menu" id="btn-ageGroup-dropdown-menu"></ul>
+						  <ul class="dropdown-menu algolia-facets" id="btn-ageGroup-dropdown-menu"></ul>
 						</div>
+
 						<!-- borough dropdown -->
 						<div class="btn-group algolia-facets-item">
-						  <button class="btn btn-secondary btn-lg dropdown-toggle facet-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-county-dropdown-name">
-						    Borough</span>
-						  </button>
-						  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split facet-borough-secondary" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
+						  <button type="button" class="btn facet-borough dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  	Borough <span id="county-refinement-count"></span>
 						  	<span class="caret"></span>
-						    <span class="sr-only">Toggle Dropdown</span>
 						  </button>
-						  <ul class="dropdown-menu" id="btn-county-dropdown-menu">
-						  </ul>
+						  <ul class="dropdown-menu algolia-facets" id="btn-county-dropdown-menu"></ul>
 						</div>
 
                  	</div>
                 </div>
                 
+                <div class="filter-container">
+                	<span class="filter-label">FILTERS: </span>
+                	<span class="filter-chips"></span>
+                </div>
+				
+				<br>
+
+                <div class="search-results-stat"><span class='numHits'></span> clinics found in <span class='processTime'></span> ms</div>
+                
+
                 <div class="algolia-wrapper">
 
                     <div class="algolia-wrapper-sidebar">
@@ -323,10 +330,6 @@
         </table>
         <br>
         <p class="modal-description"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
