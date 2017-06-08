@@ -131,40 +131,31 @@ function renderResults ($results_container, results_data) {
 
 // Render Modal=======================================================================
 
-// Desired Data Elements Displayed for Search Results:
-
-// ·         Program Name if Program
-// ·         Parent Agency of Program
-// ·         Location
-
-// Contact Information
-// ·         Phone
-// ·         Fax
-// ·         Web address
- 
-// ·         Languages
-// ·         Wheelchair accessible (Y,N)
-// ·         Program description (text entry)
-//           Special populations served (text entry)
-// ·          Eligibility for services (text entry)
-// ·         Hours of Operation
-// ·          Walk-ins (Y/N) and Walk-in hours
-// ·          Same day appointments (Y/N)
-
-// Payment 
-// ·         Insurances accepted (Text entry)
-// ·         Flexible payment/sliding scale (Y, N)
-// ·         Free Services (Y, N)
-
 function fillResultModal(e) {
 	var hitIndex = $(e.target).data( "hit" );
 	var data = result_data[hitIndex]; 
+	console.log(data)
 	$('.modal-programName').html(data.programName)
+	$('.modal-parentAgency').html(data.parentAgency)
+	 
 	$('.modal-address').html(data.street + ' ' + data.state + ' ' + data.zip)
 	$('.modal-website').html('<a href="'+data.website+'">'+data.website+'</a>')
-	$('.modal-email').html('<a>'+data.email+'</a>')
+	$('.modal-email').html('<a>'+data.email +'</a>')
 	$('.modal-tel').html('<a>'+data.phone.join(', ')+'</a>')
+	$('.modal-fax').html('<a>'+ data.fax +'</a>')
+
+	$('.modal-specialties').html(data.specialties.join(', '))
+	
 	$('.modal-description').html(data.description)
+	$('.modal-special-population').html(data.specialPopulations.join(', '))
+
+	$('.modal-walkins').html(data.walkIns.join(', '))
+	$('.modal-walkinhour').html(data.walkInHours)
+	$('.modal-samedayappoint').html(data.sameDayAppointments)
+
+	$('.modal-slidingScale').html(data.slidingScale.join(', '))
+	$('.modal-freeServices').html(data.freeServices.join(', '))
+
 	$('.modal-eligibility').html(data.eligibility)
 	$('.modal-insurance').html(data.insurancesAccepted.join(', '))
 	$('.modal-language').html(data.languages.join(', '))
@@ -251,7 +242,6 @@ function displayRefinements() {
 			refinements[refineVal] = facets[i]
 		}
 	}
-
 
 	var filter_html = ''
 	for (var key in refinements) {
