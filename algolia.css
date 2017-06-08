@@ -53,13 +53,7 @@
   margin-top: 40px; 
   margin-bottom: 40px; 
 }
-  .facet-btn {
-    display: flex;
-    flex-grow: 2;
-    font-size: 18px;
-    flex: 1 auto;
-  }
-
+  
   .facet-insurance {
     background-color: #C9302C; 
     color: white;
@@ -83,19 +77,13 @@
 
   .facet-borough {
     padding: 14px 30px;
-    padding-left: 10px;
+    /*padding-left: 10px;*/
     border: 1px solid #ccc;
     font-size: 18px;
     border-radius: 4px;
     color: grey;
     background-color: white; 
     border-color: lightgrey;
-  }
-
-  .facet-borough-secondary {
-    background-color:white; 
-    border-color: lightgrey;
-    padding: 14px 13px;
   }
 
 @media (max-width: 1000px) {
@@ -133,7 +121,31 @@ em {
    background-color: grey;
 }
 
+.algolia-facet-selected-chip {
+  color: #3798BC;
+  margin: 10px;
+  cursor: pointer;
+}
 
+.dropdown-menu {
+  background-color: white;
+}
+
+.algolia-facet {
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.algolia-facet-name {
+  flex: 1 auto;
+}
+
+.algolia-facet-count {
+  flex: 1;
+  text-align: right;
+  color: grey;
+}
 
 .algolia-sort-container {
   border-bottom: 1px solid #ccc; }
@@ -151,6 +163,7 @@ em {
   margin-top: 10px; }
 
 .algolia-result {
+  cursor: pointer;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex; }
