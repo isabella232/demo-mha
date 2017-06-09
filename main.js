@@ -104,7 +104,7 @@ function renderResults ($results_container, results_data) {
 			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
 			        '</p>'+
 			        '<p><b>Specialties include: </b>'+highlightedSpecialties+
-			        '</p>'+
+			        ' [..]</p>'+
 			    '</div>'+
 			'</div>'
 		);
