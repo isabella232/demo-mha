@@ -61,18 +61,33 @@ function searchCallback (content, state) {
 	$('.numHits').html(content.nbHits)
 	$('.processTime').html(content.processingTimeMS)
 
-	// console.log('s',, )
-	// $('.search-results-stat').html()
+
+	
+	
+
+
 }
 
 
 // Render Results=======================================================================
+
+
 function renderResults ($results_container, results_data) {
-	result_data = results_data.hits
+	// result_data = results_data.hits
 
 	var results =  results_data.hits.map(function renderHit(hit, i) {
 
 		var highlighted = hit._highlightResult;
+		
+		//highlighted specialty
+		var sortedSpecialty = hit._highlightResult.specialties.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })
+		var sortedSpecialtySliced = sortedSpecialty.splice(0,6)
+		var displaySpecialty = [];
+		for (var i=0; i < sortedSpecialtySliced.length; i++) {
+			displaySpecialty.push(sortedSpecialtySliced[i].value)
+		}
+		var highlightedSpecialties = displaySpecialty.join(', ')
+		//----------------------
 
 		var address = hit.street !== ' ' ? hit.street+'  '+hit.city+'  '+hit.state+'  '+hit.zip : ''
 		return (
@@ -88,6 +103,8 @@ function renderResults ($results_container, results_data) {
 			        '<p class="algolia-result-content-tel" data-hit="'+i+'">'+
 			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
 			        '</p>'+
+			        '<p><b>Specialties include: </b>'+highlightedSpecialties+
+			        ' [..]</p>'+
 			    '</div>'+
 			'</div>'
 		);
@@ -134,28 +151,22 @@ function renderResults ($results_container, results_data) {
 function fillResultModal(e) {
 	var hitIndex = $(e.target).data( "hit" );
 	var data = result_data[hitIndex]; 
-	console.log(data)
+
 	$('.modal-programName').html(data.programName)
-	$('.modal-parentAgency').html(data.parentAgency)
-	 
+	$('.modal-parentAgency').html(data.parentAgency)	 
 	$('.modal-address').html(data.street + ' ' + data.state + ' ' + data.zip)
 	$('.modal-website').html('<a href="'+data.website+'">'+data.website+'</a>')
 	$('.modal-email').html('<a>'+data.email +'</a>')
 	$('.modal-tel').html('<a>'+data.phone.join(', ')+'</a>')
 	$('.modal-fax').html('<a>'+ data.fax +'</a>')
-
 	$('.modal-specialties').html(data.specialties.join(', '))
-	
 	$('.modal-description').html(data.description)
 	$('.modal-special-population').html(data.specialPopulations.join(', '))
-
 	$('.modal-walkins').html(data.walkIns.join(', '))
 	$('.modal-walkinhour').html(data.walkInHours)
 	$('.modal-samedayappoint').html(data.sameDayAppointments)
-
 	$('.modal-slidingScale').html(data.slidingScale.join(', '))
 	$('.modal-freeServices').html(data.freeServices.join(', '))
-
 	$('.modal-eligibility').html(data.eligibility)
 	$('.modal-insurance').html(data.insurancesAccepted.join(', '))
 	$('.modal-language').html(data.languages.join(', '))
