@@ -61,11 +61,6 @@ function searchCallback (content, state) {
 	$('.numHits').html(content.nbHits)
 	$('.processTime').html(content.processingTimeMS)
 
-
-	
-	
-
-
 }
 
 
@@ -73,9 +68,11 @@ function searchCallback (content, state) {
 
 
 function renderResults ($results_container, results_data) {
-	// result_data = results_data.hits
 
-	var results =  results_data.hits.map(function renderHit(hit, i) {
+	var results =  results_data.hits.map(function renderHit(hit, j) {
+		//cache result sets
+		result_data = results_data.hits
+		// result_data.push(hit)
 
 		var highlighted = hit._highlightResult;
 		
@@ -91,19 +88,19 @@ function renderResults ($results_container, results_data) {
 
 		var address = hit.street !== ' ' ? hit.street+'  '+hit.city+'  '+hit.state+'  '+hit.zip : ''
 		return (
-			'<div class="algolia-result" data-toggle="modal" data-target="#myModal">'+
-			    '<div class="algolia-result-share-container">'+
+			'<div class="algolia-result" data-toggle="modal" data-target="#myModal" >'+
+			    '<div class="algolia-result-share-container" data-hit="'+j+'">'+
 			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
 			    '</div>'+
-			    '<div class="algolia-result-content">'+
-			        '<p class="algolia-result-content-name" data-hit="'+i+'">'+highlighted.programName.value+'</p>'+
-			        '<p class="algolia-result-content-address" data-hit="'+i+'">'+
-			            '<span>'+address+'</span>'+    
+			    '<div class="algolia-result-content" data-hit="'+j+'">'+
+			        '<p class="algolia-result-content-name"data-hit="'+j+'" >'+highlighted.programName.value+'</p>'+
+			        '<p class="algolia-result-content-address" data-hit="'+j+'">'+
+			            '<span data-hit="'+j+'">'+address+'</span>'+    
 			        '</p>'+
-			        '<p class="algolia-result-content-tel" data-hit="'+i+'">'+
+			        '<p class="algolia-result-content-tel" data-hit="'+j+'">'+
 			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
 			        '</p>'+
-			        '<p><b>Specialties include: </b>'+highlightedSpecialties+
+			        '<p data-hit="'+j+'"><b>Specialties include: </b>'+highlightedSpecialties+
 			        ' [..]</p>'+
 			    '</div>'+
 			'</div>'
