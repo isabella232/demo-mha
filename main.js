@@ -1,5 +1,15 @@
 $(window).load(function(){
 
+//Unique(ish) ID for identifying the user. ~1 in 1 million chance of collision. See broofa's answer here for details: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+var USER_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);});
+var ID_COOKIE;
+if(!readCookie('user_id')){
+	createCookie('user_id', USER_ID, 1)
+	ID_COOKIE = readCookie('user_id')
+} else {
+	ID_COOKIE = readCookie('user_id')
+}
+
 var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
@@ -117,12 +127,15 @@ function rateResult(e){
 	var resultContent = $(resultDiv).find('p.algolia-result-content-name')
 
 	var data = {
+		"userGuid": ID_COOKIE,
+		"timestamp": Date.now(),
 		"starRating": target.value,
 		"searchRank": $(resultContent).data('hit'),
-		"objectID": rawID.substring(rawID.indexOf('-') + 1),  //Remove the "rating-" prefix from the ID
+		"resourceID": rawID.substring(rawID.indexOf('-') + 1),  //Remove the "rating-" prefix from the ID
 		"humanReadableName": $(resultContent).text(),
 		"queryString": $inputfield.val()
 	}
+	
 	postUrl = 'https://script.google.com/macros/s/AKfycbwbyKjcl-dQ8XACgoRRReEI0Zvt_tkTlrVOxgOK43nsLDs9Dsg/exec'
 	console.log(data);
 	$.ajax({
@@ -283,6 +296,32 @@ function renderFacets($facet_container, results) {
     $('#btn-'+name+'-dropdown-menu').html(facetList)
   });
   
+}
+
+//Cookie set/get functions. Source: https://www.quirksmode.org/js/cookies.html
+function createCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+}
+
+function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    createCookie(name,"",-1);
 }
 
 });
