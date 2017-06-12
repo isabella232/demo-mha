@@ -1,3 +1,4 @@
+
 $(window).load(function(){
 
 // Client + Helper initialization
@@ -102,8 +103,6 @@ function renderHighlightsSnippets(hit){
 }
 
 function renderResults ($results_container, results_data) {
-	console.log(results_data)
-
 	var results =  results_data.hits.map(function renderHit(hit, j) {
 		//cache result sets
 		result_data = results_data.hits
