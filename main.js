@@ -1,11 +1,13 @@
+
 $(window).load(function(){
 
 // Client + Helper initialization
+var hitsperPage = 10
 var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
 var PARAMS = { 
-	hitsPerPage: 4,
+	hitsPerPage: hitsperPage,
 	facets: ['county', 'specialPopulations', 'insurancesAccepted', 'ageGroup', 'type'] 
 };
 
@@ -52,38 +54,65 @@ function searchCallback (content, state) {
 	    // If there is no result we display a friendly message, instead of an empty page.
 	    $results_container.empty().html("No results");
 	    $pagination.empty();
+	    renderSearchStats(content)
 	    return;
 	 }
+
 	renderResults($results_container, content);
 	renderFacets($facet_container, content);
 	displayRefinements()
-
-	$('.numHits').html(content.nbHits)
-	$('.processTime').html(content.processingTimeMS)
-
+	renderSearchStats(content)
 }
 
 
 // Render Results=======================================================================
+function renderSearchStats(content) {
+	$('.numHits').html(content.nbHits)
+	$('.processTime').html(content.processingTimeMS)
+}
 
+//return highlights from specialty or snippets from description
+function renderHighlightsSnippets(hit){
+	var highlighted = hit._highlightResult;
+	var snippet = hit._snippetResult
+	var results = '';
+
+	//parse relevant specialties
+	var displaySpecialty = [];
+	var sortedSpecialty = highlighted.specialties.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })	
+	var sortedSpecialtySliced = sortedSpecialty.splice(0,2)	
+	for (var i=0; i < sortedSpecialtySliced.length; i++) {
+		displaySpecialty.push(sortedSpecialtySliced[i].value)
+	}
+	joined = displaySpecialty.join(', ')
+	results += '<b>Specialties include: </b>'+joined+
+			        ' [..]';
+
+	//parse relevant desc snippets
+	if (joined.indexOf('<em>') < 0) {
+		var snippet = hit._snippetResult
+		for (var key in snippet) {
+			if (snippet[key].matchLevel !== 'none') {
+				results = '<b>Description: </b>'+'..'+snippet[key].value+
+			        ' ..';
+			}
+		}
+	}
+	
+	return results;
+}
 
 function renderResults ($results_container, results_data) {
-
 	var results =  results_data.hits.map(function renderHit(hit, j) {
 		//cache result sets
 		result_data = results_data.hits
-		// result_data.push(hit)
 
-		var highlighted = hit._highlightResult;
+		// console.log(hit)
 		
 		//highlighted specialty
-		var sortedSpecialty = hit._highlightResult.specialties.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })
-		var sortedSpecialtySliced = sortedSpecialty.splice(0,6)
-		var displaySpecialty = [];
-		for (var i=0; i < sortedSpecialtySliced.length; i++) {
-			displaySpecialty.push(sortedSpecialtySliced[i].value)
-		}
-		var highlightedSpecialties = displaySpecialty.join(', ')
+		var highlighted = hit._highlightResult;
+		var highlightSnippetAttributes = renderHighlightsSnippets(hit);
+		
 		//----------------------
 
 		var address = hit.street !== ' ' ? hit.street+'  '+hit.city+'  '+hit.state+'  '+hit.zip : ''
@@ -100,8 +129,7 @@ function renderResults ($results_container, results_data) {
 			        '<p class="algolia-result-content-tel" data-hit="'+j+'">'+
 			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
 			        '</p>'+
-			        '<p data-hit="'+j+'"><b>Specialties include: </b>'+highlightedSpecialties+
-			        ' [..]</p>'+
+			        '<p data-hit="'+j+'">'+highlightSnippetAttributes+'</p>'+
 			    '</div>'+
 			'</div>'
 		);
@@ -110,17 +138,15 @@ function renderResults ($results_container, results_data) {
 	var currPage = algoliaHelper.getPage()
 
 	var previousPage = currPage ? '<li class="page-item" id="previousPage">'+
-'      <a class="page-link" href="#" aria-label="Previous"> Previous'+
+'      <a class="page-link" href="#search-container" aria-label="Previous"> Previous'+
 '      </a>'+
 '    </li>' : '';
 	
 	var nextPage = '';
-	
-	// var totalPagesAvail = results_data.nbHits/3
 
-	if (results_data.hits.length == 4) {
+	if (results_data.hits.length == hitsperPage) {
 		nextPage = '<li class="page-item" id="nextPage">'+
-	'      <a class="page-link" href="#" aria-label="Next"> Next'+
+	'      <a class="page-link" href="#search-container" aria-label="Next"> Next'+
 	'      </a>'+
 	'    </li>';
 	}
@@ -129,17 +155,12 @@ function renderResults ($results_container, results_data) {
 '  <ul class="pagination">'+  previousPage + nextPage +
 '  </ul>'+
 '</nav>';
-	
-	// var pagination = '<button class="btn btn-primary" id="showMore">Show More</button>';
 
 	$results_container.html(results);
 	$pagination.html(pagination);
 
-	$('#showMore').on('click', showMore)
 	$('#previousPage').on('click', getPreviousPage)
 	$('#nextPage').on('click', getNextPage)
-
-	$('.algolia-showMore').on('click', showMore)
 	$('.algolia-result').on('click', fillResultModal)
 }
 
@@ -169,10 +190,6 @@ function fillResultModal(e) {
 	$('.modal-language').html(data.languages.join(', '))
 	$('.modal-hours').html(data.hours.join('<br>'))
 	$('.modal-disability').html(data.wheelchair)
-}
-
-function showMore() {
-	
 }
 
 function getNextPage() {
@@ -232,16 +249,11 @@ function displayRefinements() {
 		var refine = algoliaHelper.getRefinements(facets[i]);
 		totalRefine += refine.length;
 
-		//display count of refinements on facet
-		if (refine.length > 0) {
-			$('.filter-label').show()	
-			$('#'+facets[i]+'-refinement-count').html('('+refine.length+')')	
-		} else {
-			$('#'+facets[i]+'-refinement-count').html('')
-		}
-
+		//show filter label
 		if (totalRefine == 0) {
 			$('.filter-label').hide();
+		} else {
+			$('.filter-label').show()	
 		}
 
 		//format refinement filters
@@ -255,7 +267,7 @@ function displayRefinements() {
 	for (var key in refinements) {
 		var attribute = refinements[key];
 		var value = key;
-		filter_html += '<span class="algolia-facet-selected-chip"><span>'+value+'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span></span>';
+		filter_html += '<div class="algolia-facet-selected-chip" data-value="'+value+'"><div>'+value+'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>';
 	}
 
 	$('.filter-chips').html(filter_html)
@@ -263,8 +275,7 @@ function displayRefinements() {
 	$('.algolia-facet-selected-chip').on('click', function(e){
 		e.preventDefault();
 
-		var target = e.target;
-		var value = $(target).text();
+		var value = $(this).data('value')
 		var attribute = refinements[value]
 		
 		if(!attribute || !value) return;
@@ -294,7 +305,7 @@ function handleFacetClick(e) {
 
 //Render facet values==========================================================================
 function renderFacets($facet_container, results) {
-
+	$('#btn-specialPopulations-dropdown-menu').html('');
   var facet_html_arr = [];
 
   var facets = results.facets.map(function(facet) {
@@ -308,7 +319,7 @@ function renderFacets($facet_container, results) {
     var facetsValuesList = $.map(facetValues, function(facetValue) {
       var facetValueClass = facetValue.isRefined ? 'refined'  : '';
 
-      var valueAndCount = '<a data-attribute="' + name + '" data-value="' + facetValue.name + '" href="#">' + facetValue.name + ' (' + facetValue.count + ')' + '</a>';
+      var valueAndCount = '<a class="facet-selection" data-attribute="' + name + '" data-value="' + facetValue.name + '" href="#">' + facetValue.name + ' (' + facetValue.count + ')' + '</a>';
 
       return '<li class="' + facetValueClass + '">' + valueAndCount + '</li>';
       
