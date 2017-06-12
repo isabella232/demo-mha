@@ -200,28 +200,14 @@
 	    </div>
 <!-- 	    /container-fluid inside-hero-01 -->
 		
+
+<!-- Algolia HTML  -->
 		<div class="maincontent">
 				
 			<div class="container" id='search-container'>
                 <div class="algolia-input-container">
                 	<!-- input box -->
                  	<input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
-
-                 	<!-- type dropdown -->
-					<!-- <div class="btn-group">
-					  <button class="btn btn-secondary btn-lg dropdown-toggle" id="btn-borough" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="btn-type-dropdown-name">
-					    choose one</span>
-					  </button>
-					  <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" id="btn-borough-secondary" aria-haspopup="true" aria-expanded="false" >
-					  	<span class="caret"></span>
-					    <span class="sr-only">Toggle Dropdown</span>
-					  </button>
-					  <div class="dropdown-menu" id="btn-type-dropdown-menu">
-					    ...
-					  </div>
-					</div> -->
-                 	
-                 	<!-- {insurancesAccepted: [], county: [], specialPopulations: [], ageGroup: [], type: []}; -->
 
                  	<!-- facet -->
                  	<div class="algolia-facets-container">
@@ -273,8 +259,9 @@
 				
 				<br>
 
-                <div class="search-results-stat"><span class='numHits'></span> clinics found in <span class='processTime'></span> ms</div>
-                
+				<div id="stats"></div>
+
+				<div class="algolia-results-1"></div>
 
                 <div class="algolia-wrapper">
 
@@ -294,108 +281,171 @@
                     </div>
 
 
-                    <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-programName" id="myModalLabel"></h4>
-      </div>
-      <div class="modal-body">
-        <p><b>Parent Agency:</b> <span class="modal-parentAgency"></span></p>
-        <p><b>Address: </b><span class="modal-address"></span></p>
-        <p><b>Phone: </b><span class="modal-tel"></span></p>
-        <p><b>Fax: </b><span class="modal-fax"></span></p>
-        <p><b>Website: </b><span class="modal-website"></span></p>
-        <p><b>Email: </b><span class="modal-email"></span></p>
+                <!-- Modal -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-programName" id="myModalLabel"></h4>
+				      </div>
+				      <div class="modal-body">
+				        <p><b>Parent Agency:</b> <span class="modal-parentAgency"></span></p>
+				        <p><b>Address: </b><span class="modal-address"></span></p>
+				        <p><b>Phone: </b><span class="modal-tel"></span></p>
+				        <p><b>Fax: </b><span class="modal-fax"></span></p>
+				        <p><b>Website: </b><span class="modal-website"></span></p>
+				        <p><b>Email: </b><span class="modal-email"></span></p>
 
-        <p><b>Description:</b></p>
-        <p class="modal-description"></p>
+				        <p><b>Description:</b></p>
+				        <p class="modal-description"></p>
 
-        <table >
-	        <tr>
-	        	<td class="modal-h"><b>Languages</b></td>
-	        	<td class="modal-b modal-language"></td>
-	        </tr>
+				        <table >
+					        <tr>
+					        	<td class="modal-h"><b>Languages</b></td>
+					        	<td class="modal-b modal-language"></td>
+					        </tr>
 
-	        <tr>
-	        	<td class="modal-h"><b>Specialties</b></td>
-	        	<td class="modal-b modal-specialties"></td>
-	        </tr>
+					        <tr>
+					        	<td class="modal-h"><b>Specialties</b></td>
+					        	<td class="modal-b modal-specialties"></td>
+					        </tr>
 
-	        <tr>
-	        	<td class="modal-h"><b>Special Population Served</b></td>
-	        	<td class="modal-b modal-special-population"></td>
-	        </tr>
+					        <tr>
+					        	<td class="modal-h"><b>Special Population Served</b></td>
+					        	<td class="modal-b modal-special-population"></td>
+					        </tr>
 
-	        <tr>
-	        	<td class="modal-h"><b>Wheelchair Accessible</b></td>
-	        	<td class="modal-b modal-disability"></td>
-	        </tr>
-
-
-	        <tr>
-	        	<td class="modal-h"><b>Eligibility</b></td>
-	        	<td class="modal-b modal-eligibility"></td>
-	        </tr>
-	        
-	        <tr>
-	        	<td class="modal-h"><b>Hours</b></td>
-	        	<td class="modal-b modal-hours"></td>
-	        </tr>
-
-	        <tr>
-	        	<td class="modal-h"><b>Walk-ins</b></td>
-	        	<td class="modal-b modal-walkins"></td>
-	        </tr>
-
-	        <tr>
-	        	<td class="modal-h"><b>Walk-in hours</b></td>
-	        	<td class="modal-b modal-walkinhour"></td>
-	        </tr>
-
-	        <tr>
-	        	<td class="modal-h"><b>Same Day Appointments</b></td>
-	        	<td class="modal-b modal-samedayappoint"></td>
-	        </tr>
-
-	        <tr>
-	        	<td class="modal-h"><b>Insurance Accepted</b></td>
-	        	<td class="modal-b modal-insurance"></td>
-	        </tr>
+					        <tr>
+					        	<td class="modal-h"><b>Wheelchair Accessible</b></td>
+					        	<td class="modal-b modal-disability"></td>
+					        </tr>
 
 
-	        <tr>
-	        	<td class="modal-h"><b>Free Services</b></td>
-	        	<td class="modal-b modal-freeServices"></td>
-	        </tr>
+					        <tr>
+					        	<td class="modal-h"><b>Eligibility</b></td>
+					        	<td class="modal-b modal-eligibility"></td>
+					        </tr>
+					        
+					        <tr>
+					        	<td class="modal-h"><b>Hours</b></td>
+					        	<td class="modal-b modal-hours"></td>
+					        </tr>
 
-	        <tr>
-	        	<td class="modal-h"><b>Flexible Payments/Slideing Scale</b></td>
-	        	<td class="modal-b modal-slidingScale"></td>
-	        </tr>
+					        <tr>
+					        	<td class="modal-h"><b>Walk-ins</b></td>
+					        	<td class="modal-b modal-walkins"></td>
+					        </tr>
 
-        </table>
-        <br>
-      </div>
-    </div>
-  </div>
-</div>
+					        <tr>
+					        	<td class="modal-h"><b>Walk-in hours</b></td>
+					        	<td class="modal-b modal-walkinhour"></td>
+					        </tr>
+
+					        <tr>
+					        	<td class="modal-h"><b>Same Day Appointments</b></td>
+					        	<td class="modal-b modal-samedayappoint"></td>
+					        </tr>
+
+					        <tr>
+					        	<td class="modal-h"><b>Insurance Accepted</b></td>
+					        	<td class="modal-b modal-insurance"></td>
+					        </tr>
+
+
+					        <tr>
+					        	<td class="modal-h"><b>Free Services</b></td>
+					        	<td class="modal-b modal-freeServices"></td>
+					        </tr>
+
+					        <tr>
+					        	<td class="modal-h"><b>Flexible Payments/Slideing Scale</b></td>
+					        	<td class="modal-b modal-slidingScale"></td>
+					        </tr>
+
+				        </table>
+				        <br>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+
                     <!-- wrapper     -->
                     <div class="algolia-wrapper-main">
-                    	
-
                         <div class="algolia-map-container"><div id="map"></div>
                         
                         <div><a href="https://docs.google.com/spreadsheets/d/1NRxtS4wNkWwee4v5fuWpPC9XRN3YKT8_CYDhfTfdf2I/edit#gid=0">#26</a></div>
-
-                        </div>
+                    </div>
                         
 
                     </div>
                     
                 </div>
+
+<!-- Templates -->
+<!-- Stats template -->
+  <script type="text/template" id="stats-template">
+    {{ nbHits }} Clinic{{#nbHits_plural}}s{{/nbHits_plural}} <span class="found-in">Found in {{ processingTimeMS }}ms</span>
+  </script>
+
+<!-- Results template -->
+<!-- Hit template -->
+  <script type="text/template" id="results-template">
+    {{#hits}}
+    <div class="algolia-result" data-toggle="modal" data-target="#myModal">
+      <div class="algolia-result-share-container" data-hit="{{index}}">
+      	<img class="algolia-result-share-icon" src="share-icon.png">
+      </div>
+
+      <div class="algolia-result-content" data-hit="{{index}}">
+	        <p class="algolia-result-content-name" data-hit="{{index}}">{{{_highlightResult.programName.value}}}</p>
+	        <p class="algolia-result-content-address" data-hit="{{index}}">
+	            <span data-hit="{{index}}">{{address}}</span>
+	        </p>
+	        <p class="algolia-result-content-tel" data-hit="{{index}}">
+	            <span><a href="{{website}}">{{website}}</a></span>
+	        </p>
+	        <p data-hit="{{index}}">{{{highlightSnippetAttributes}}}</p>
+	    </div>
+	</div>
+
+      <!-- <div class="hit-image">
+        <img src="{{ image }}" alt="{{ name }}">
+      </div>
+      <div class="hit-content">
+        <h3 class="hit-price">${{ price }}</h3>
+        <h2 class="hit-name">{{{ _highlightResult.name.value }}}</h2>
+        <p class="hit-description">{{{ _highlightResult.description.value }}}</p>
+      </div>
+    </div> -->
+    {{/hits}}
+  </script>
+
+<!-- 
+  return (
+			'<div class="algolia-result" data-toggle="modal" data-target="#myModal" >'+
+			    '<div class="algolia-result-share-container" data-hit="'+j+'">'+
+			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
+			    '</div>'+
+			    '<div class="algolia-result-content" data-hit="'+j+'">'+
+			        '<p class="algolia-result-content-name"data-hit="'+j+'" >'+highlighted.programName.value+'</p>'+
+			        '<p class="algolia-result-content-address" data-hit="'+j+'">'+
+			            '<span data-hit="'+j+'">'+address+'</span>'+    
+			        '</p>'+
+			        '<p class="algolia-result-content-tel" data-hit="'+j+'">'+
+			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
+			        '</p>'+
+			        '<p data-hit="'+j+'">'+highlightSnippetAttributes+'</p>'+
+			    '</div>'+
+			'</div>'
+		);
+	}) -->
+<!-- Templates -->
+
+<!-- Algolia HTML  -->
+
+
 				<article style="display: none;">
 					<div class="row">
 						<div class="col-md-12">
@@ -492,12 +542,15 @@
 	</div>
 </footer>
 
+<!-- Javascript import -->
 <script src="https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.jsdelivr.net/hogan.js/3.0.2/hogan.min.common.js"></script>
 <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
 <script src="https://cdn.jsdelivr.net/algoliasearch.helper/2/algoliasearch.helper.js"></script>
-
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtihvCyiz7VElHsH44gxSqL9lOZzAURFw"></script>
 <script src='main.js'></script>
+<!-- /Javascript import -->
+
 <script type="text/javascript" src="wp-content/themes/nycwell/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="wp-content/themes/nycwell/js/sweetalert.min.js"></script>
 <script type="text/javascript" src="wp-content/themes/nycwell/js/ie10-viewport-bug-workaround.js"></script>

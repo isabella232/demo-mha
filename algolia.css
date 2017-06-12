@@ -3,7 +3,6 @@
 }
 
 .refined {
-  font-weight: bolder;
   text-decoration: line-through;
 }
 
@@ -142,6 +141,11 @@ em {
   color: #3798BC;
   margin: 10px;
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.algolia-facet-selected-chip:hover {
+  font-weight: bold;
 }
 
 .dropdown-menu {
@@ -176,10 +180,6 @@ em {
 
 .glyphicon {
   padding-left: 2px;
-}
-
-.algolia-facet-selected-chip {
-  flex-shrink: 0;
 }
 
 .algolia-sort-container {

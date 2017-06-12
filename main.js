@@ -1,38 +1,80 @@
-
 $(window).load(function(){
+// INITIALIZATION
+// ==============
 
-// Client + Helper initialization
-var hitsperPage = 10
+// Replace with your own values
 var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
+var HITS_PER_PAGE = 10
 var PARAMS = { 
-	hitsPerPage: hitsperPage,
+	hitsPerPage: HITS_PER_PAGE,
 	facets: ['county', 'specialPopulations', 'insurancesAccepted', 'ageGroup', 'type'] 
 };
 
+// Client + Helper initialization
 var algolia = algoliasearch(APPLICATION_ID, SEARCH_ONLY_API_KEY);
 var algoliaHelper = algoliasearchHelper(algolia, INDEX_NAME, PARAMS);
 var index = algolia.initIndex(INDEX_NAME)
 
-
-var $results_container = $(".algolia-results");
+// DOM BINDING
+var result_data = [];
+var $stats = $('#stats');
+var $results = $(".algolia-results");
 var $inputfield = $(".algolia-input-search");
 var $pagination = $(".algolia-pagination");
 var $facets = $('.algolia-facets');
+var $facet_container = $('.algolia-facets-container')
+
 $facets.on('click', handleFacetClick);
 
-var result_data = [];
+// Hogan templates binding
+var statsTemplate = Hogan.compile($('#stats-template').text());
+var resultTemplate = Hogan.compile($('#results-template').text());
 
-//if url param is defined, set state || otherwise, search around 8km================
+// Initial search
+//=====================
 if (window.location.search) {
+	//set state if url param is defined
 	var qs = window.location.search.substring(1)
 	algoliaHelper.setState(algoliasearchHelper.url.getStateFromQueryString(qs)).search();
 	$inputfield.val(algoliaHelper.getState().query);
+} else {
+	//search around a lat lng
+	algoliaHelper.setQueryParameter('aroundLatLngViaIP', true).setQueryParameter('minimumAroundRadius', 8000).search();	
 }
-else {
-	algoliaHelper.setQueryParameter('minimumAroundRadius', 8000).search();	
+
+//SEARCH BINDING
+//================
+
+algoliaHelper.on('result', searchCallback);
+
+function searchCallback (content, state) {
+  	if (content.hits.length === 0) {
+	    // If there is no result we display a friendly message, instead of an empty page.
+	    $results_container.empty().html("No results");
+	    $pagination.empty();
+	    renderStats(content)
+	    return;
+	 }
+
+	renderStats(content)
+	renderHits(content)
+	renderPaginations($results, content);
+	renderFacets($facet_container, content);
+	renderRefinements()
 }
+
+//Input binding
+$inputfield.keyup(function(e) {
+	var query = $inputfield.val()
+	algoliaHelper.setQuery(query).search()
+});
+
+// Update URL
+algoliaHelper.on('change', function () {
+    updateUrl();
+ });
 
 function updateUrl(){
 	var state = algoliaHelper.getState();
@@ -40,43 +82,43 @@ function updateUrl(){
 	history.pushState(null, null, '?'+qs);
 }
 
-//Search ==============================================================
-algoliaHelper.on('result', searchCallback);
-
-$inputfield.keyup(function(e) {
-	var query = $inputfield.val()
-	algoliaHelper.setQuery(query).search()
-	updateUrl()
-});
-
-function searchCallback (content, state) {
-  	if (content.hits.length === 0) {
-	    // If there is no result we display a friendly message, instead of an empty page.
-	    $results_container.empty().html("No results");
-	    $pagination.empty();
-	    renderSearchStats(content)
-	    return;
-	 }
-
-	renderResults($results_container, content);
-	renderFacets($facet_container, content);
-	displayRefinements()
-	renderSearchStats(content)
+// RENDER SEARCH COMPONENTS
+// ========================
+function renderStats(content) {
+	var stats = {
+	  nbHits: content.nbHits,
+	  nbHits_plural: content.nbHits !== 1,
+	  processingTimeMS: content.processingTimeMS
+	};
+	$stats.html(statsTemplate.render(stats));
 }
 
+function renderHits(content) {
+	var hits = content.hits;
+	//cache result hits
+	result_data = hits
 
-// Render Results=======================================================================
-function renderSearchStats(content) {
-	$('.numHits').html(content.nbHits)
-	$('.processTime').html(content.processingTimeMS)
+	//add more result details
+	for (var i=0; i < hits.length; i++) {
+		var hit = hits[i];
+		var highlighted = hit._highlightResult;
+
+		content.hits[i].index = i;
+		content.hits[i].highlightSnippetAttributes = renderHighlightsSnippets(hit);
+		content.hits[i].address = hit.street !== ' ' ? hit.street+'  '+highlighted.county.value+'  '+hit.state+'  '+hit.zip : '';
+	}
+
+	$results.html(resultTemplate.render(content));
+	$('.algolia-result').on('click', renderModal)
 }
 
-//return highlights from specialty or snippets from description
 function renderHighlightsSnippets(hit){
+	//render highlights/snippets from searchable attributes 
 	var highlighted = hit._highlightResult;
 	var snippet = hit._snippetResult
 	var results = '';
 
+	//(order: specialties > parentAgency > description)
 	//parse relevant specialties
 	var displaySpecialty = [];
 	var sortedSpecialty = highlighted.specialties.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })	
@@ -84,12 +126,19 @@ function renderHighlightsSnippets(hit){
 	for (var i=0; i < sortedSpecialtySliced.length; i++) {
 		displaySpecialty.push(sortedSpecialtySliced[i].value)
 	}
-	joined = displaySpecialty.join(', ')
-	results += '<b>Specialties include: </b>'+joined+
-			        ' [..]';
+	results += '<b>Specialties include: </b>'+ displaySpecialty.join(', ') +
+			        ' ..';
+
+	//parse relevant parentAgency
+	if (results.indexOf('<em>') < 0) {
+		var parentAgency = highlighted.parentAgency
+		if (parentAgency.matchLevel !== 'none') {
+			results = '<b>Parent Agency: </b>'+' '+parentAgency.value;
+		}
+	}
 
 	//parse relevant desc snippets
-	if (joined.indexOf('<em>') < 0) {
+	if (results.indexOf('<em>') < 0) {
 		var snippet = hit._snippetResult
 		for (var key in snippet) {
 			if (snippet[key].matchLevel !== 'none') {
@@ -98,42 +147,11 @@ function renderHighlightsSnippets(hit){
 			}
 		}
 	}
-	
+
 	return results;
 }
 
-function renderResults ($results_container, results_data) {
-	var results =  results_data.hits.map(function renderHit(hit, j) {
-		//cache result sets
-		result_data = results_data.hits
-
-		// console.log(hit)
-		
-		//highlighted specialty
-		var highlighted = hit._highlightResult;
-		var highlightSnippetAttributes = renderHighlightsSnippets(hit);
-		
-		//----------------------
-
-		var address = hit.street !== ' ' ? hit.street+'  '+hit.city+'  '+hit.state+'  '+hit.zip : ''
-		return (
-			'<div class="algolia-result" data-toggle="modal" data-target="#myModal" >'+
-			    '<div class="algolia-result-share-container" data-hit="'+j+'">'+
-			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
-			    '</div>'+
-			    '<div class="algolia-result-content" data-hit="'+j+'">'+
-			        '<p class="algolia-result-content-name"data-hit="'+j+'" >'+highlighted.programName.value+'</p>'+
-			        '<p class="algolia-result-content-address" data-hit="'+j+'">'+
-			            '<span data-hit="'+j+'">'+address+'</span>'+    
-			        '</p>'+
-			        '<p class="algolia-result-content-tel" data-hit="'+j+'">'+
-			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
-			        '</p>'+
-			        '<p data-hit="'+j+'">'+highlightSnippetAttributes+'</p>'+
-			    '</div>'+
-			'</div>'
-		);
-	})
+function renderPaginations ($results_container, results_data) {
 
 	var currPage = algoliaHelper.getPage()
 
@@ -144,7 +162,7 @@ function renderResults ($results_container, results_data) {
 	
 	var nextPage = '';
 
-	if (results_data.hits.length == hitsperPage) {
+	if (results_data.hits.length == HITS_PER_PAGE) {
 		nextPage = '<li class="page-item" id="nextPage">'+
 	'      <a class="page-link" href="#search-container" aria-label="Next"> Next'+
 	'      </a>'+
@@ -156,17 +174,23 @@ function renderResults ($results_container, results_data) {
 '  </ul>'+
 '</nav>';
 
-	$results_container.html(results);
 	$pagination.html(pagination);
 
 	$('#previousPage').on('click', getPreviousPage)
 	$('#nextPage').on('click', getNextPage)
-	$('.algolia-result').on('click', fillResultModal)
 }
 
-// Render Modal=======================================================================
+function getNextPage() {
+	var currPage = algoliaHelper.getPage()
+	algoliaHelper.setPage(currPage).nextPage().search()
+}
 
-function fillResultModal(e) {
+function getPreviousPage() {
+	var currPage = algoliaHelper.getPage()
+	algoliaHelper.setPage(currPage).previousPage().search()
+}
+
+function renderModal(e) {
 	var hitIndex = $(e.target).data( "hit" );
 	var data = result_data[hitIndex]; 
 
@@ -192,53 +216,7 @@ function fillResultModal(e) {
 	$('.modal-disability').html(data.wheelchair)
 }
 
-function getNextPage() {
-	var currPage = algoliaHelper.getPage()
-	algoliaHelper.setPage(currPage).nextPage().search()
-}
-
-function getPreviousPage() {
-	var currPage = algoliaHelper.getPage()
-	algoliaHelper.setPage(currPage).previousPage().search()
-}
-
-//markers=============================================================================================== 
-var fitMapToMarkersAutomatically = true;
-algoliaHelper.on('result', function(content, state) {
-	//initialize map
-	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 5, maxZoom: 20 });
-	var markers = [];
-    
-	// Add the markers to the map
-	for (var i = 0; i < content.hits.length; ++i) {
-		var hit = content.hits[i];
-		if (content.hits[i]._geoloc) {
-		    var marker = new google.maps.Marker({
-		      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
-		      map: map
-		    });
-		    markers.push(marker);
-		}
-	}
-
-	// Automatically fit the map zoom and position to see the markers
-	if (fitMapToMarkersAutomatically) {
-		var mapBounds = new google.maps.LatLngBounds();
-		for (i = 0; i < markers.length; i++) {
-		  mapBounds.extend(markers[i].getPosition());
-		}
-		map.fitBounds(mapBounds);
-	}
-
-	//retrieve center
-	google.maps.event.addListener(map, "dragend", function() {
-		algoliaHelper.setQueryParameter('aroundLatLng', [map.getCenter().lat(),map.getCenter().lng()].join(', ')).search();
-    });
-
-});
-
-//refinement========================================================================
-function displayRefinements() {
+function renderRefinements() {
 
 	var facets = ['ageGroup', 'county', 'insurancesAccepted', 'specialPopulations'];
 	var refinements = {}
@@ -281,14 +259,46 @@ function displayRefinements() {
 		if(!attribute || !value) return;
 		algoliaHelper.toggleRefine(attribute, value).search();
 
-		updateUrl()
 	})
-
 }
 
-// faceting==============================================================================
-var $facet_container = $('.algolia-facets-container')
+//Render markers on map
+var fitMapToMarkersAutomatically = true;
+algoliaHelper.on('result', function(content, state) {
+	//initialize map
+	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 5, maxZoom: 20 });
+	var markers = [];
+    
+	// Add the markers to the map
+	for (var i = 0; i < content.hits.length; ++i) {
+		var hit = content.hits[i];
+		if (content.hits[i]._geoloc) {
+		    var marker = new google.maps.Marker({
+		      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
+		      map: map
+		    });
 
+		    markers.push(marker);
+		}
+	}
+
+	// Automatically fit the map zoom and position to see the markers
+	if (fitMapToMarkersAutomatically) {
+		var mapBounds = new google.maps.LatLngBounds();
+		for (i = 0; i < markers.length; i++) {
+		  mapBounds.extend(markers[i].getPosition());
+		}
+		map.fitBounds(mapBounds);
+	}
+
+	//retrieve center
+	google.maps.event.addListener(map, "dragend", function() {
+		algoliaHelper.setQueryParameter('aroundLatLng', [map.getCenter().lat(),map.getCenter().lng()].join(', ')).setQueryParameter('aroundLatLngViaIP', false).search();
+    });
+
+});
+
+// faceting
 function handleFacetClick(e) {
 	e.preventDefault();
 
@@ -299,17 +309,15 @@ function handleFacetClick(e) {
   	
 	algoliaHelper.toggleRefine(attribute, value).search();
 
-	updateUrl()
-	displayRefinements()
+	renderRefinements()
 }
 
-//Render facet values==========================================================================
+//Render facet values
 function renderFacets($facet_container, results) {
-	$('#btn-specialPopulations-dropdown-menu').html('');
-  var facet_html_arr = [];
 
   var facets = results.facets.map(function(facet) {
     var name = facet.name;
+  	$('#btn-'+name+'-dropdown-menu').html('');
 
     //handle facet clicks
     // $('#btn-'+name+'-dropdown-menu').on('click', handleFacetClick);
@@ -342,5 +350,7 @@ function renderFacets($facet_container, results) {
   });
 
 }
+
+
 
 });
