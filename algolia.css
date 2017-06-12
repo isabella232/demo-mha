@@ -3,6 +3,11 @@
 }
 
 .refined {
+  font-weight: bolder;
+  text-decoration: line-through;
+}
+
+.facet-selection:hover {
   text-decoration: line-through;
 }
 
@@ -26,21 +31,49 @@
     }
   }
 
+.algolia-map-container {
+  width: 100%;
+  /*padding-bottom: 100%;*/
+  /*background-color: #ccc;*/
+  /*position: relative; */
+}
+  .algolia-map-container:before {
+    /*content: "Map goes here";*/
+    /*position: absolute;*/
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%); }
+
+#map {
+   width: 100%;
+   height: 606.67px;
+   background-color: grey;
+   flex-shrink: 0;
+}
+
 .algolia-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex; 
+
+  }
   
   .algolia-wrapper-sidebar {
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
-    -ms-flex-preferred-size: 0;
-        flex-basis: 0;
+    /*-webkit-box-flex: 1;*/
+        /*-ms-flex-positive: 1;*/
+            /*flex-grow: 1;*/
+    /*-ms-flex-preferred-size: 0;*/
+        /*flex-basis: 0;*/
+        flex-shrink: 0;
+        max-width: 580px;
+        width: auto;
+        /*flex-basis: 300px;*/
         flex-wrap: wrap;
     margin-top: 15px; }
   
   .algolia-wrapper-main {
+
     -webkit-box-flex: 2;
         -ms-flex-positive: 2;
             flex-grow: 1;
@@ -92,33 +125,17 @@
   }
 }
 
+.algolia-facets {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
 .algolia-facets-item + .algolia-facets-item {
   position: relative;
   margin-left: 10px; }
 
 em {
   background-color: yellow;
-}
-
-.algolia-map-container {
-  width: 100%;
-  /*padding-bottom: 100%;*/
-  /*background-color: #ccc;*/
-  /*position: relative; */
-}
-  .algolia-map-container:before {
-    /*content: "Map goes here";*/
-    /*position: absolute;*/
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-            transform: translateX(-50%) translateY(-50%); }
-
-
-#map {
-   width: 100%;
-   height: 606.67px;
-   background-color: grey;
 }
 
 .algolia-facet-selected-chip {
@@ -147,6 +164,24 @@ em {
   color: grey;
 }
 
+.filter-container {
+  display: flex;
+  align-items: center;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.glyphicon {
+  padding-left: 2px;
+}
+
+.algolia-facet-selected-chip {
+  flex-shrink: 0;
+}
+
 .algolia-sort-container {
   border-bottom: 1px solid #ccc; }
 
@@ -160,7 +195,10 @@ em {
   margin-bottom: -1px; }
 
 .algolia-results {
-  margin-top: 10px; }
+  margin-top: 10px; 
+  max-height: 600px;
+  overflow-y: scroll;
+}
 
 .algolia-result {
   cursor: pointer;

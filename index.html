@@ -202,7 +202,7 @@
 		
 		<div class="maincontent">
 				
-			<div class="container">
+			<div class="container" id='search-container'>
                 <div class="algolia-input-container">
                 	<!-- input box -->
                  	<input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
@@ -230,7 +230,7 @@
                  		<!-- special population -->
                  		<div class="btn-group algolia-facets-item">
 						  <button type="button" class="btn facet-specialPopulation dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Special Population <span id="specialPopulations-refinement-count"></span>
+						  	Special Population 
 						  	<span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu algolia-facets" id="btn-specialPopulations-dropdown-menu"></ul>
@@ -239,7 +239,7 @@
 						<!-- insurance -->
 						<div class="btn-group algolia-facets-item">
 						  <button type="button" class="btn facet-insurance dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Insurance <span id="insurancesAccepted-refinement-count"></span>
+						  	Insurance 
 						  	<span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu algolia-facets" id="btn-insurancesAccepted-dropdown-menu"></ul>
@@ -248,7 +248,7 @@
 						<!-- age -->
 						<div class="btn-group algolia-facets-item">
 						  <button type="button" class="btn facet-age dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Age <span id="ageGroup-refinement-count"></span>
+						  	Age 
 						  	<span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu algolia-facets" id="btn-ageGroup-dropdown-menu"></ul>
@@ -257,7 +257,7 @@
 						<!-- borough dropdown -->
 						<div class="btn-group algolia-facets-item">
 						  <button type="button" class="btn facet-borough dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Borough <span id="county-refinement-count"></span>
+						  	Borough 
 						  	<span class="caret"></span>
 						  </button>
 						  <ul class="dropdown-menu algolia-facets" id="btn-county-dropdown-menu"></ul>
@@ -267,8 +267,8 @@
                 </div>
                 
                 <div class="filter-container">
-                	<span class="filter-label">FILTERS: </span>
-                	<span class="filter-chips"></span>
+                	<div class="filter-label">FILTERS: </div>
+                	<div class="filter-chips"></div>
                 </div>
 				
 				<br>
@@ -494,7 +494,7 @@
 
 <script src="https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
-<script src="https://cdn.jsdelivr.net/algoliasearch.helper/2/algoliasearch.helper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/algoliasearch.helper/2/algoliasearch.helper.js"></script>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtihvCyiz7VElHsH44gxSqL9lOZzAURFw"></script>
 <script src='main.js'></script>
