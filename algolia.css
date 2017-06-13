@@ -93,6 +93,10 @@
     padding: 11px 20px;
   }
 
+  .facet-insurance:hover {
+    color: lightgrey;
+  }
+
   .facet-specialPopulation {
     background-color: #449D44; 
     color: white;
@@ -100,11 +104,19 @@
     padding: 11px 20px;
   }
 
+  .facet-specialPopulation:hover {
+    color: lightgrey;
+  }
+
   .facet-age {
     background-color: #337AB7; 
     color: white;
     font-size: 18px;
     padding: 11px 20px;
+  }
+
+  .facet-age:hover {
+    color: lightgrey;
   }
 
   .facet-borough {
@@ -122,6 +134,14 @@
   .algolia-wrapper {
     flex-direction: column;
   }
+}
+
+.algolia-active-result {
+  background-color: #F2EFEF;
+}
+
+.algolia-inactive-result {
+  
 }
 
 .algolia-facets {
@@ -182,6 +202,26 @@ em {
   padding-left: 2px;
 }
 
+.algolia-result-details-btn {
+  display: none;
+  margin: 10px;
+  padding: 14px 30px;
+  border: 1px solid #ccc;
+  font-size: 18px;
+  border-radius: 4px;
+  color: white;
+  background-color: #EF7C21; 
+  border-color: lightgrey;
+}
+
+.algolia-result-details-btn:hover{
+  color: lightgrey;
+}
+
+.algolia-result-details-btn-active {
+  display: block;
+}
+
 .algolia-sort-container {
   border-bottom: 1px solid #ccc; }
 
@@ -195,7 +235,7 @@ em {
   margin-bottom: -1px; }
 
 .algolia-results {
-  margin-top: 10px; 
+  margin-top: 10px;
   max-height: 600px;
   overflow-y: scroll;
 }
@@ -206,9 +246,10 @@ em {
   display: -ms-flexbox;
   display: flex; }
   .algolia-result + .algolia-result {
-    margin-top: 15px;
+    /*margin-top: 15px;*/
     border-top: 1px solid #ccc;
-    padding-top: 10px; }
+    padding-top: 10px; 
+    padding-bottom: 10px;}
   .algolia-result-share-icon {
     width: 30px;
     cursor: pointer; }

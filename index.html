@@ -260,9 +260,6 @@
 				<br>
 
 				<div id="stats"></div>
-
-				<div class="algolia-results-1"></div>
-
                 <div class="algolia-wrapper">
 
                     <div class="algolia-wrapper-sidebar">
@@ -393,20 +390,26 @@
 <!-- Hit template -->
   <script type="text/template" id="results-template">
     {{#hits}}
-    <div class="algolia-result" data-toggle="modal" data-target="#myModal">
+    <div class="algolia-result" id="algolia-result-{{objectID}}" data-objectid="{{objectID}}">
+    <!-- <div class="algolia-result" data-toggle="modal" id="algolia-result-{{objectID}}" data-target="#myModal1"> -->
       <div class="algolia-result-share-container" data-hit="{{index}}">
       	<img class="algolia-result-share-icon" src="share-icon.png">
       </div>
 
       <div class="algolia-result-content" data-hit="{{index}}">
-	        <p class="algolia-result-content-name" data-hit="{{index}}">{{{_highlightResult.programName.value}}}</p>
+	        <p class="algolia-result-content-name" data-hit="{{index}}">
+	        	{{{_highlightResult.programName.value}}}
+	        </p>
 	        <p class="algolia-result-content-address" data-hit="{{index}}">
 	            <span data-hit="{{index}}">{{address}}</span>
 	        </p>
 	        <p class="algolia-result-content-tel" data-hit="{{index}}">
 	            <span><a href="http://{{website}}">{{website}}</a></span>
 	        </p>
-	        <p data-hit="{{index}}">{{{highlightSnippetAttributes}}}</p>
+	        <p data-hit="{{index}}">
+	        	{{{highlightSnippetAttributes}}}
+	        	<button type="button"  class="btn algolia-result-details-btn" id="algolia-result-details-btn-{{objectID}}" data-toggle="modal" data-target="#myModal" data-hit="{{index}}">Details</button>
+	        </p>
 	    </div>
 	</div>
     {{/hits}}
