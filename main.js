@@ -124,13 +124,13 @@ function renderHits(content) {
 	$results.html(resultTemplate.render(content));
 
 	$('.algolia-result').click(function(){
-		$('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
 		//open info window of marker
 		var objectID = $(this).data('objectid');
 		var markerSelected = markerResultMap[objectID];
 		google.maps.event.trigger(markerSelected, 'click');
 
 		//show More Detail Button
+		$('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
 		$('#algolia-result-details-btn-'+objectID).addClass('algolia-result-details-btn-active')
 		$('.algolia-result-details-btn').click(renderModal)
 	})
@@ -327,6 +327,9 @@ function scrollResultIntoView(objectID){
 	var element = $('#algolia-result-'+objectID);
     element[0].scrollIntoView();
     element.addClass("algolia-active-result");
+
+    $('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
+	$('#algolia-result-details-btn-'+objectID).addClass('algolia-result-details-btn-active')
 }
 
 function closeLastOpenedInfoWindow() {
