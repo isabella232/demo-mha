@@ -372,7 +372,7 @@
                     <div class="algolia-wrapper-main">
                         <div class="algolia-map-container"><div id="map"></div>
                         
-                        <div><a href="https://docs.google.com/spreadsheets/d/1NRxtS4wNkWwee4v5fuWpPC9XRN3YKT8_CYDhfTfdf2I/edit#gid=0">#26</a></div>
+                        <div><a href="https://docs.google.com/spreadsheets/d/1NRxtS4wNkWwee4v5fuWpPC9XRN3YKT8_CYDhfTfdf2I/edit#gid=0">#29</a></div>
                     </div>
                         
 
@@ -391,22 +391,21 @@
   <script type="text/template" id="results-template">
     {{#hits}}
     <div class="algolia-result" id="algolia-result-{{objectID}}" data-objectid="{{objectID}}">
-    <!-- <div class="algolia-result" data-toggle="modal" id="algolia-result-{{objectID}}" data-target="#myModal1"> -->
-      <div class="algolia-result-share-container" data-hit="{{index}}">
+      <div class="algolia-result-share-container">
       	<img class="algolia-result-share-icon" src="share-icon.png">
       </div>
 
-      <div class="algolia-result-content" data-hit="{{index}}">
-	        <p class="algolia-result-content-name" data-hit="{{index}}">
+      <div class="algolia-result-content">
+	        <p class="algolia-result-content-name">
 	        	{{{_highlightResult.programName.value}}}
 	        </p>
-	        <p class="algolia-result-content-address" data-hit="{{index}}">
+	        <p class="algolia-result-content-address">
 	            <span data-hit="{{index}}">{{address}}</span>
 	        </p>
-	        <p class="algolia-result-content-tel" data-hit="{{index}}">
+	        <p class="algolia-result-content-tel">
 	            <span><a href="http://{{website}}">{{website}}</a></span>
 	        </p>
-	        <p data-hit="{{index}}">
+	        <p>
 	        	{{{highlightSnippetAttributes}}}
 	        	<button type="button"  class="btn algolia-result-details-btn" id="algolia-result-details-btn-{{objectID}}" data-toggle="modal" data-target="#myModal" data-hit="{{index}}">Details</button>
 	        </p>
