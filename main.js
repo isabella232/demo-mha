@@ -60,6 +60,7 @@ function searchCallback (content, state) {
 
 	renderStats(content)
 	renderHits(content)
+	renderMap(content)
 	renderPaginations($results, content);
 	renderFacets($facet_container, content);
 	renderRefinements()
@@ -121,7 +122,18 @@ function renderHits(content) {
 	}
 
 	$results.html(resultTemplate.render(content));
-	$('.algolia-result').on('click', renderModal)
+
+	$('.algolia-result').click(function(){
+		$('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
+		//open info window of marker
+		var objectID = $(this).data('objectid');
+		var markerSelected = markerResultMap[objectID];
+		google.maps.event.trigger(markerSelected, 'click');
+
+		//show More Detail Button
+		$('#algolia-result-details-btn-'+objectID).addClass('algolia-result-details-btn-active')
+		$('.algolia-result-details-btn').click(renderModal)
+	})
 }
 
 //specify attributes to exclude 
@@ -283,7 +295,6 @@ function renderRefinements() {
 
 function createMarker(map, hit, i) {
 	var contentString = '<div id="content">'+
-    '</div>'+
     '<h5 class="markerHeading" data-lat="'+hit._geoloc.lat+'" data-lng="'+hit._geoloc.lng+'">'+hit.programName+'</h5>'+
     '<div class="markerBody">'+
     '<p>'+hit.address+'</p>'+
@@ -300,18 +311,36 @@ function createMarker(map, hit, i) {
       program: hit.programName
     });
 
-    //add info window
+    //add info window & scroll result into view
     marker.addListener('click', function(){
-    	infowindow.close();
+		closeLastOpenedInfoWindow()
     	infowindow.open(map, this);
+    	lastOpenedInfoWindow = infowindow;
+		scrollResultIntoView(hit.objectID);
     });
 
     return marker;
 }
 
+function scrollResultIntoView(objectID){
+	$('.algolia-active-result').removeClass("algolia-active-result");
+	var element = $('#algolia-result-'+objectID);
+    element[0].scrollIntoView();
+    element.addClass("algolia-active-result");
+}
+
+function closeLastOpenedInfoWindow() {
+	if (lastOpenedInfoWindow) {
+		lastOpenedInfoWindow.close();
+	}
+}
+
 //Render markers on map
+var lastOpenedInfoWindow; 
 var fitMapToMarkersAutomatically = true;
-algoliaHelper.on('result', function(content, state) {
+var markerResultMap = {};
+
+function renderMap (content) {
 	//initialize map
 	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 1, maxZoom: 15 });
 	var markers = [];
@@ -319,8 +348,9 @@ algoliaHelper.on('result', function(content, state) {
 	// Add the markers to the map
 	for (var i = 0; i < content.hits.length; ++i) {
 		var hit = content.hits[i];
-		if (content.hits[i]._geoloc) {
+		if (hit._geoloc) {
 		    var marker = createMarker(map, hit, i);
+		    markerResultMap[hit.objectID] = marker;
 		    markers.push(marker);
 		}
 	}
@@ -338,6 +368,9 @@ algoliaHelper.on('result', function(content, state) {
 	google.maps.event.addListener(map, "dragend", function() {
 		algoliaHelper.setQueryParameter('aroundLatLng', [map.getCenter().lat(),map.getCenter().lng()].join(', ')).setQueryParameter('aroundLatLngViaIP', false).search();
     });
+}
+algoliaHelper.on('result', function(content, state) {
+	
 
 });
 
