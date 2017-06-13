@@ -386,7 +386,7 @@
 <!-- Templates -->
 <!-- Stats template -->
   <script type="text/template" id="stats-template">
-    {{ nbHits }} Clinic{{#nbHits_plural}}s{{/nbHits_plural}} <span class="found-in">Found in {{ processingTimeMS }}ms</span>
+    Showing {{resultStart}} - {{resultEnd}} of {{ nbHits }} clinic{{#nbHits_plural}}s{{/nbHits_plural}} found
   </script>
 
 <!-- Results template -->
@@ -404,43 +404,14 @@
 	            <span data-hit="{{index}}">{{address}}</span>
 	        </p>
 	        <p class="algolia-result-content-tel" data-hit="{{index}}">
-	            <span><a href="{{website}}">{{website}}</a></span>
+	            <span><a href="http://{{website}}">{{website}}</a></span>
 	        </p>
 	        <p data-hit="{{index}}">{{{highlightSnippetAttributes}}}</p>
 	    </div>
 	</div>
-
-      <!-- <div class="hit-image">
-        <img src="{{ image }}" alt="{{ name }}">
-      </div>
-      <div class="hit-content">
-        <h3 class="hit-price">${{ price }}</h3>
-        <h2 class="hit-name">{{{ _highlightResult.name.value }}}</h2>
-        <p class="hit-description">{{{ _highlightResult.description.value }}}</p>
-      </div>
-    </div> -->
     {{/hits}}
   </script>
 
-<!-- 
-  return (
-			'<div class="algolia-result" data-toggle="modal" data-target="#myModal" >'+
-			    '<div class="algolia-result-share-container" data-hit="'+j+'">'+
-			        '<img class="algolia-result-share-icon" src="share-icon.png">'+
-			    '</div>'+
-			    '<div class="algolia-result-content" data-hit="'+j+'">'+
-			        '<p class="algolia-result-content-name"data-hit="'+j+'" >'+highlighted.programName.value+'</p>'+
-			        '<p class="algolia-result-content-address" data-hit="'+j+'">'+
-			            '<span data-hit="'+j+'">'+address+'</span>'+    
-			        '</p>'+
-			        '<p class="algolia-result-content-tel" data-hit="'+j+'">'+
-			            '<span><a href="'+hit.website+'">'+hit.website+'</a></span>'+
-			        '</p>'+
-			        '<p data-hit="'+j+'">'+highlightSnippetAttributes+'</p>'+
-			    '</div>'+
-			'</div>'
-		);
-	}) -->
 <!-- Templates -->
 
 <!-- Algolia HTML  -->

@@ -2,7 +2,7 @@ $(window).load(function(){
 // INITIALIZATION
 // ==============
 
-// Replace with your own values
+// Replace with your own App details
 var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
@@ -52,7 +52,7 @@ algoliaHelper.on('result', searchCallback);
 function searchCallback (content, state) {
   	if (content.hits.length === 0) {
 	    // If there is no result we display a friendly message, instead of an empty page.
-	    $results_container.empty().html("No results");
+	    $results.empty().html("No results");
 	    $pagination.empty();
 	    renderStats(content)
 	    return;
@@ -74,7 +74,7 @@ $inputfield.keyup(function(e) {
 // Update URL
 algoliaHelper.on('change', function () {
     updateUrl();
- });
+});
 
 function updateUrl(){
 	var state = algoliaHelper.getState();
@@ -85,11 +85,23 @@ function updateUrl(){
 // RENDER SEARCH COMPONENTS
 // ========================
 function renderStats(content) {
+	var resultStart = (content.page * content.hitsPerPage) + 1;
+	var resultEnd = 0;
+
+	if (content.hits.length < content.hitsPerPage) {
+		resultEnd = (content.page * content.hitsPerPage) + content.hits.length;	
+	} else {
+		resultEnd = (content.page * content.hitsPerPage) + content.hitsPerPage;
+	}
+
 	var stats = {
 	  nbHits: content.nbHits,
 	  nbHits_plural: content.nbHits !== 1,
-	  processingTimeMS: content.processingTimeMS
+	  processingTimeMS: content.processingTimeMS,
+	  resultStart: resultStart,
+	  resultEnd: resultEnd
 	};
+
 	$stats.html(statsTemplate.render(stats));
 }
 
@@ -112,13 +124,20 @@ function renderHits(content) {
 	$('.algolia-result').on('click', renderModal)
 }
 
+//specify attributes to exclude 
+//grab all related values {attr: <em>xxx</em>}
+//order these obj based on importance of attr
+
+//display results with labels 
+	//specialty trimmed 
+
 function renderHighlightsSnippets(hit){
 	//render highlights/snippets from searchable attributes 
 	var highlighted = hit._highlightResult;
 	var snippet = hit._snippetResult
 	var results = '';
 
-	//(order: specialties > parentAgency > description)
+	//order: specialties > parentAgency > description
 	//parse relevant specialties
 	var displaySpecialty = [];
 	var sortedSpecialty = highlighted.specialties.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })	
@@ -262,22 +281,46 @@ function renderRefinements() {
 	})
 }
 
+function createMarker(map, hit, i) {
+	var contentString = '<div id="content">'+
+    '</div>'+
+    '<h5 class="markerHeading" data-lat="'+hit._geoloc.lat+'" data-lng="'+hit._geoloc.lng+'">'+hit.programName+'</h5>'+
+    '<div class="markerBody">'+
+    '<p>'+hit.address+'</p>'+
+    '<a href="http://'+hit.website+'">'+hit.website+'</a>'+
+    '</div>';
+
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+
+    var marker = new google.maps.Marker({
+      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
+      map: map,
+      program: hit.programName
+    });
+
+    //add info window
+    marker.addListener('click', function(){
+    	infowindow.close();
+    	infowindow.open(map, this);
+    });
+
+    return marker;
+}
+
 //Render markers on map
 var fitMapToMarkersAutomatically = true;
 algoliaHelper.on('result', function(content, state) {
 	//initialize map
-	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 5, maxZoom: 20 });
+	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 1, maxZoom: 15 });
 	var markers = [];
     
 	// Add the markers to the map
 	for (var i = 0; i < content.hits.length; ++i) {
 		var hit = content.hits[i];
 		if (content.hits[i]._geoloc) {
-		    var marker = new google.maps.Marker({
-		      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
-		      map: map
-		    });
-
+		    var marker = createMarker(map, hit, i);
 		    markers.push(marker);
 		}
 	}
@@ -297,20 +340,6 @@ algoliaHelper.on('result', function(content, state) {
     });
 
 });
-
-// faceting
-function handleFacetClick(e) {
-	e.preventDefault();
-
-	var target = e.target;
-	var attribute = target.dataset.attribute;
-	var value = target.dataset.value;
-	if(!attribute || !value) return;
-  	
-	algoliaHelper.toggleRefine(attribute, value).search();
-
-	renderRefinements()
-}
 
 //Render facet values
 function renderFacets($facet_container, results) {
@@ -349,6 +378,20 @@ function renderFacets($facet_container, results) {
     $('#btn-'+name+'-dropdown-menu').html(facetList)
   });
 
+}
+
+// faceting
+function handleFacetClick(e) {
+	e.preventDefault();
+
+	var target = e.target;
+	var attribute = target.dataset.attribute;
+	var value = target.dataset.value;
+	if(!attribute || !value) return;
+  	
+	algoliaHelper.toggleRefine(attribute, value).search();
+
+	renderRefinements()
 }
 
 
