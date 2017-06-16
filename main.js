@@ -178,7 +178,6 @@ function renderHighlightsSnippets(hit){
 				}
 
 				if (attr == 'parentAgency') {
-					console.log(highlighted)
 					results = '<b>Parent Agency: </b>'+ highlighted[attr].value +
 				        ' ..';
 				}
