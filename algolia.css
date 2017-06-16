@@ -59,15 +59,10 @@
   }
   
   .algolia-wrapper-sidebar {
-    /*-webkit-box-flex: 1;*/
-        /*-ms-flex-positive: 1;*/
-            /*flex-grow: 1;*/
-    /*-ms-flex-preferred-size: 0;*/
-        /*flex-basis: 0;*/
         flex-shrink: 0;
         max-width: 580px;
+        min-width: 300px;
         width: auto;
-        /*flex-basis: 300px;*/
         flex-wrap: wrap;
     margin-top: 15px; }
   
@@ -78,7 +73,6 @@
             flex-grow: 1;
     -ms-flex-preferred-size: 0;
         flex-basis: 0;
-        flex-flow: row wrap;
     margin-left: 30px; }
 
 .algolia-facets-container {
@@ -86,40 +80,40 @@
   margin-bottom: 40px; 
 }
   
-  .facet-insurance {
+  .facet-insurancesAccepted {
     background-color: #C9302C; 
     color: white;
     font-size: 18px;
     padding: 11px 20px;
   }
 
-  .facet-insurance:hover {
+  .facet-insurancesAccepted:hover {
     color: lightgrey;
   }
 
-  .facet-specialPopulation {
+  .facet-specialPopulations {
     background-color: #449D44; 
     color: white;
     font-size: 18px;
     padding: 11px 20px;
   }
 
-  .facet-specialPopulation:hover {
+  .facet-specialPopulations:hover {
     color: lightgrey;
   }
 
-  .facet-age {
+  .facet-ageGroup {
     background-color: #337AB7; 
     color: white;
     font-size: 18px;
     padding: 11px 20px;
   }
 
-  .facet-age:hover {
+  .facet-ageGroup:hover {
     color: lightgrey;
   }
 
-  .facet-borough {
+  .facet-county {
     padding: 14px 30px;
     /*padding-left: 10px;*/
     border: 1px solid #ccc;
@@ -188,12 +182,12 @@ em {
   color: grey;
 }
 
-.filter-container {
+.algolia-refinements {
   display: flex;
   align-items: center;
 }
 
-.filter-chips {
+.algolia-refinement-chips {
   display: flex;
   flex-wrap: wrap;
 }

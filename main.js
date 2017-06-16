@@ -2,15 +2,21 @@ $(window).load(function(){
 // INITIALIZATION
 // ==============
 
-// Replace with your own App details
+// Replace with your own App info
 var APPLICATION_ID = '8RN20T1NDJ';
 var SEARCH_ONLY_API_KEY = 'c9c14a2d9e24d14d85d2ae0a2ee235df';
 var INDEX_NAME = 'nycwell_052317';
 var HITS_PER_PAGE = 10
 var PARAMS = { 
 	hitsPerPage: HITS_PER_PAGE,
-	facets: ['county', 'specialPopulations', 'insurancesAccepted', 'ageGroup', 'type'] 
+	facets: ['specialPopulations', 'insurancesAccepted', 'ageGroup', 'county'] 
 };
+var facetLabelMap = {
+	specialPopulations: 'Special Population',
+	insurancesAccepted: 'Insurance',
+	ageGroup: 'Age',
+	county: 'Borough'
+}
 
 // Client + Helper initialization
 var algolia = algoliasearch(APPLICATION_ID, SEARCH_ONLY_API_KEY);
@@ -18,19 +24,26 @@ var algoliaHelper = algoliasearchHelper(algolia, INDEX_NAME, PARAMS);
 var index = algolia.initIndex(INDEX_NAME)
 
 // DOM BINDING
-var result_data = [];
-var $stats = $('#stats');
+var hits = [];
+var facets = [];
+
+var $stats = $('.algolia-stats');
 var $results = $(".algolia-results");
 var $inputfield = $(".algolia-input-search");
 var $pagination = $(".algolia-pagination");
 var $facets = $('.algolia-facets');
-var $facet_container = $('.algolia-facets-container')
-
-$facets.on('click', handleFacetClick);
+var $filterChips = $('.algolia-refinement-chips');
+var $refinement = $(".algolia-refinements")
+var $facetsContainer = $('.algolia-facets-container');
 
 // Hogan templates binding
 var statsTemplate = Hogan.compile($('#stats-template').text());
 var resultTemplate = Hogan.compile($('#results-template').text());
+var paginationTemplate = Hogan.compile($('#pagination-template').text());
+var resultModalTemplate = Hogan.compile($('#result-modal-template').text());
+var refinementTemplate = Hogan.compile($('#refinement-template').text());
+var facetTemplate = Hogan.compile($('#facet-template').text());
+
 
 // Initial search
 //=====================
@@ -40,7 +53,7 @@ if (window.location.search) {
 	algoliaHelper.setState(algoliasearchHelper.url.getStateFromQueryString(qs)).search();
 	$inputfield.val(algoliaHelper.getState().query);
 } else {
-	//search around a lat lng
+	//search around users location
 	algoliaHelper.setQueryParameter('aroundLatLngViaIP', true).setQueryParameter('minimumAroundRadius', 8000).search();	
 }
 
@@ -50,20 +63,14 @@ if (window.location.search) {
 algoliaHelper.on('result', searchCallback);
 
 function searchCallback (content, state) {
-  	if (content.hits.length === 0) {
-	    // If there is no result we display a friendly message, instead of an empty page.
-	    $results.empty().html("No results");
-	    $pagination.empty();
-	    renderStats(content)
-	    return;
-	 }
-
-	renderStats(content)
-	renderHits(content)
-	renderMap(content)
-	renderPaginations($results, content);
-	renderFacets($facet_container, content);
-	renderRefinements()
+	hits = content.hits;
+	facets = content.facets;
+	renderStats(content);
+	renderHits(content);
+	renderMap(content);
+	renderPaginations(content);
+	renderFacets($facetsContainer, content);
+	renderRefinements();
 }
 
 //Input binding
@@ -87,8 +94,8 @@ function updateUrl(){
 // ========================
 function renderStats(content) {
 	var resultStart = (content.page * content.hitsPerPage) + 1;
+	
 	var resultEnd = 0;
-
 	if (content.hits.length < content.hitsPerPage) {
 		resultEnd = (content.page * content.hitsPerPage) + content.hits.length;	
 	} else {
@@ -106,106 +113,127 @@ function renderStats(content) {
 	$stats.html(statsTemplate.render(stats));
 }
 
+//HITS
 function renderHits(content) {
-	var hits = content.hits;
-	//cache result hits
-	result_data = hits
+	if (content.hits.length === 0) {
+		//No Results
+	    $results.html("");
+	    $pagination.empty();
+	    $stats.html('No Clinics Found');
 
-	//add more result details
-	for (var i=0; i < hits.length; i++) {
-		var hit = hits[i];
-		var highlighted = hit._highlightResult;
+	 } else {
+		//add more result details
+		for (var i=0; i < hits.length; i++) {
+			var hit = hits[i];
+			var highlighted = hit._highlightResult;
 
-		content.hits[i].index = i;
-		content.hits[i].highlightSnippetAttributes = renderHighlightsSnippets(hit);
-		content.hits[i].address = hit.street !== ' ' ? hit.street+'  '+highlighted.county.value+'  '+hit.state+'  '+hit.zip : '';
-	}
+			content.hits[i].index = i;
+			content.hits[i].highlightSnippetAttributes = renderHighlightsSnippets(hit);
+			content.hits[i].address = hit.street !== ' ' ? hit.street+'  '+highlighted.county.value+'  '+hit.state+'  '+hit.zip : '';
+		}
 
-	$results.html(resultTemplate.render(content));
+		$results.html(resultTemplate.render(content));
 
-	$('.algolia-result').click(function(){
-		//open info window of marker
-		var objectID = $(this).data('objectid');
-		var markerSelected = markerResultMap[objectID];
-		google.maps.event.trigger(markerSelected, 'click');
-
-		//show More Detail Button
-		$('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
-		$('#algolia-result-details-btn-'+objectID).addClass('algolia-result-details-btn-active')
-		$('.algolia-result-details-btn').click(renderModal)
-	})
+		$('.algolia-result').click(function(){
+			var objectID = $(this).data('objectid');
+			toggleMapMarkerInfoWindow(objectID);
+		})
+	 }
 }
 
-//specify attributes to exclude 
-//grab all related values {attr: <em>xxx</em>}
-//order these obj based on importance of attr
+function highlightResult(objectID) {
+	$('.algolia-active-result').removeClass("algolia-active-result");
+	$('#algolia-result-'+objectID).addClass("algolia-active-result");
+	showResultDetailsButton(objectID);
+}
 
-//display results with labels 
-	//specialty trimmed 
+function scrollResultIntoView(objectID) {
+	var element = $('#algolia-result-'+objectID);
+    element[0].scrollIntoView();
+}
 
+function showResultDetailsButton(objectID) {
+	$('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
+	$('#algolia-result-details-btn-'+objectID).addClass('algolia-result-details-btn-active')
+	$('.algolia-result-details-btn').click(renderModal)
+}
+
+//HIGHLIGHTS SNIPPETS
 function renderHighlightsSnippets(hit){
-	//render highlights/snippets from searchable attributes 
-	var highlighted = hit._highlightResult;
-	var snippet = hit._snippetResult
 	var results = '';
+	var orderedHighlightedAttr = ['specialties', 'parentAgency', 'description']
+	var highlighted = getHighlightSnippets(hit);
 
-	//order: specialties > parentAgency > description
-	//parse relevant specialties
-	var displaySpecialty = [];
-	var sortedSpecialty = highlighted.specialties.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })	
-	var sortedSpecialtySliced = sortedSpecialty.splice(0,2)	
-	for (var i=0; i < sortedSpecialtySliced.length; i++) {
-		displaySpecialty.push(sortedSpecialtySliced[i].value)
-	}
-	results += '<b>Specialties include: </b>'+ displaySpecialty.join(', ') +
-			        ' ..';
+	//parse relevant highlights
+	//PS. This is disgusting
+	for (var i=0; i < orderedHighlightedAttr.length; i++) {
+		if (results.indexOf('<em>') < 0) {
+			var attr = orderedHighlightedAttr[i];
 
-	//parse relevant parentAgency
-	if (results.indexOf('<em>') < 0) {
-		var parentAgency = highlighted.parentAgency
-		if (parentAgency.matchLevel !== 'none') {
-			results = '<b>Parent Agency: </b>'+' '+parentAgency.value;
-		}
-	}
+			if (highlighted[attr]) {
+				if (attr == 'specialties') {
+					displaySpecialty = limitArrayOfHighlightedResults(highlighted[attr], 2);
+					results = '<b>Specialties: </b>'+ displaySpecialty.join(', ') +
+				        ' ..';
+				}
 
-	//parse relevant desc snippets
-	if (results.indexOf('<em>') < 0) {
-		var snippet = hit._snippetResult
-		for (var key in snippet) {
-			if (snippet[key].matchLevel !== 'none') {
-				results = '<b>Description: </b>'+'..'+snippet[key].value+
-			        ' ..';
+				if (attr == 'parentAgency') {
+					console.log(highlighted)
+					results = '<b>Parent Agency: </b>'+ highlighted[attr].value +
+				        ' ..';
+				}
+
+				if (attr == 'description') {
+					results = '<b>Description: </b>'+'..'+highlighted[attr].value+
+				        ' ..';
+				}
 			}
 		}
 	}
-
 	return results;
 }
 
-function renderPaginations ($results_container, results_data) {
-
-	var currPage = algoliaHelper.getPage()
-
-	var previousPage = currPage ? '<li class="page-item" id="previousPage">'+
-'      <a class="page-link" href="#search-container" aria-label="Previous"> Previous'+
-'      </a>'+
-'    </li>' : '';
+function getHighlightSnippets (hit) {
+	var output = {}
 	
-	var nextPage = '';
+	var highlighted = hit._highlightResult;
+	var snippet = hit._snippetResult;
 
-	if (results_data.hits.length == HITS_PER_PAGE) {
-		nextPage = '<li class="page-item" id="nextPage">'+
-	'      <a class="page-link" href="#search-container" aria-label="Next"> Next'+
-	'      </a>'+
-	'    </li>';
+	for (var key in highlighted) {
+		if (highlighted[key].matchLevel !== 'none') {
+			output[key] = highlighted[key];
+		}
 	}
-	
-	var pagination = '<nav aria-label="Page navigation example">'+
-'  <ul class="pagination">'+  previousPage + nextPage +
-'  </ul>'+
-'</nav>';
 
-	$pagination.html(pagination);
+	for (var key in snippet) {
+		if (snippet[key].matchLevel !== 'none') {
+			output[key] = snippet[key];
+		}
+	}
+
+	return output
+}
+
+function limitArrayOfHighlightedResults (highlightResult, limit) {
+	var output = [];
+	//sort results based on matching words
+	var sortedResult = highlightResult.sort(function(a,b) { return (a.matchLevel !== 'none')?  -1 : 1; })	
+	//limit results 
+	var sliced = sortedResult.splice(0, limit)	
+	//extract result values
+	for (var i=0; i < sliced.length; i++) {
+		output.push(sliced[i].value)
+	}
+	return output
+}
+
+//PAGINATION
+function renderPaginations (content) {
+	var pagination = {
+		nextPage: content.hits.length == HITS_PER_PAGE,
+		currPage: algoliaHelper.getPage()
+	};
+	$pagination.html(paginationTemplate.render(pagination));
 
 	$('#previousPage').on('click', getPreviousPage)
 	$('#nextPage').on('click', getNextPage)
@@ -221,71 +249,64 @@ function getPreviousPage() {
 	algoliaHelper.setPage(currPage).previousPage().search()
 }
 
+//RESULT DETAIL MODAL
 function renderModal(e) {
 	var hitIndex = $(e.target).data( "hit" );
-	var data = result_data[hitIndex]; 
-
-	$('.modal-programName').html(data.programName)
-	$('.modal-parentAgency').html(data.parentAgency)	 
-	$('.modal-address').html(data.street + ' ' + data.state + ' ' + data.zip)
-	$('.modal-website').html('<a href="'+data.website+'">'+data.website+'</a>')
-	$('.modal-email').html('<a>'+data.email +'</a>')
-	$('.modal-tel').html('<a>'+data.phone.join(', ')+'</a>')
-	$('.modal-fax').html('<a>'+ data.fax +'</a>')
-	$('.modal-specialties').html(data.specialties.join(', '))
-	$('.modal-description').html(data.description)
-	$('.modal-special-population').html(data.specialPopulations.join(', '))
-	$('.modal-walkins').html(data.walkIns.join(', '))
-	$('.modal-walkinhour').html(data.walkInHours)
-	$('.modal-samedayappoint').html(data.sameDayAppointments)
-	$('.modal-slidingScale').html(data.slidingScale.join(', '))
-	$('.modal-freeServices').html(data.freeServices.join(', '))
-	$('.modal-eligibility').html(data.eligibility)
-	$('.modal-insurance').html(data.insurancesAccepted.join(', '))
-	$('.modal-language').html(data.languages.join(', '))
-	$('.modal-hours').html(data.hours.join('<br>'))
-	$('.modal-disability').html(data.wheelchair)
+	var data = hits[hitIndex]; 
+	var result = {
+		programName: data.programName,
+		parentAgency: data.parentAgency,
+		address: data.street + ' ' + data.state + ' ' + data.zip,
+		website: data.website,
+		email: data.email,
+		tel: data.phone.join(', '),
+		fax: data.fax,
+		specialties: data.specialties.join(', '),
+		description: data.description,
+		specialPop: data.specialPopulations.join(', '),
+		walkins: data.walkIns.join(', '),
+		walkinhour: data.walkInHours,
+		samedayappoint: data.sameDayAppointments,
+		slidingScale: data.slidingScale.join(', '),
+		freeServices: data.freeServices.join(', '), 
+		eligibility: data.eligibility, 
+		insurance: data.insurancesAccepted.join(', '),
+		language: data.languages.join(', '),
+		hours: data.hours.join('<br>'),
+		disability: data.wheelchair
+	}
+	$('#result-modal').html(resultModalTemplate.render(result));
 }
 
+//REFINEMENT
 function renderRefinements() {
 
-	var facets = ['ageGroup', 'county', 'insurancesAccepted', 'specialPopulations'];
-	var refinements = {}
-	var totalRefine = 0;
+	var refinements = {};
+	var content = {}
+	content['chips'] = [];
+	content['hasRefine'] = false;
 
+	//format refinement filters
 	for (var i=0; i < facets.length; i++) {
-
-		var refine = algoliaHelper.getRefinements(facets[i]);
-		totalRefine += refine.length;
-
-		//show filter label
-		if (totalRefine == 0) {
-			$('.filter-label').hide();
-		} else {
-			$('.filter-label').show()	
-		}
-
-		//format refinement filters
-		for (var j=0; j < refine.length; j++) {
-			var refineVal = refine[j].value
-			refinements[refineVal] = facets[i]
-		}
+		algoliaHelper.getRefinements(facets[i].name).map(function(r){
+			refinements[r.value] = facets[i].name
+			content['hasRefine'] = true;
+		})
 	}
 
-	var filter_html = ''
-	for (var key in refinements) {
-		var attribute = refinements[key];
-		var value = key;
-		filter_html += '<div class="algolia-facet-selected-chip" data-value="'+value+'"><div>'+value+'<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>';
+	//get all refinement chips value
+	for (var value in refinements) {
+		content.chips.push({refinedValue: value})
 	}
-
-	$('.filter-chips').html(filter_html)
 	
+	$refinement.html(refinementTemplate.render(content));
+
+	//Bind click event to refinement chips
 	$('.algolia-facet-selected-chip').on('click', function(e){
 		e.preventDefault();
 
-		var value = $(this).data('value')
-		var attribute = refinements[value]
+		var value = $(this).data('value') //refined value
+		var attribute = refinements[value] //refined attribute 
 		
 		if(!attribute || !value) return;
 		algoliaHelper.toggleRefine(attribute, value).search();
@@ -293,58 +314,13 @@ function renderRefinements() {
 	})
 }
 
-function createMarker(map, hit, i) {
-	var contentString = '<div id="content">'+
-    '<h5 class="markerHeading" data-lat="'+hit._geoloc.lat+'" data-lng="'+hit._geoloc.lng+'">'+hit.programName+'</h5>'+
-    '<div class="markerBody">'+
-    '<p>'+hit.address+'</p>'+
-    '<a href="http://'+hit.website+'">'+hit.website+'</a>'+
-    '</div>';
-
-    var infowindow = new google.maps.InfoWindow({
-      content: contentString
-    });
-
-    var marker = new google.maps.Marker({
-      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
-      map: map,
-      program: hit.programName
-    });
-
-    //add info window & scroll result into view
-    marker.addListener('click', function(){
-		closeLastOpenedInfoWindow()
-    	infowindow.open(map, this);
-    	lastOpenedInfoWindow = infowindow;
-		scrollResultIntoView(hit.objectID);
-    });
-
-    return marker;
-}
-
-function scrollResultIntoView(objectID){
-	$('.algolia-active-result').removeClass("algolia-active-result");
-	var element = $('#algolia-result-'+objectID);
-    element[0].scrollIntoView();
-    element.addClass("algolia-active-result");
-
-    $('.algolia-result-details-btn-active').removeClass('algolia-result-details-btn-active');
-	$('#algolia-result-details-btn-'+objectID).addClass('algolia-result-details-btn-active')
-}
-
-function closeLastOpenedInfoWindow() {
-	if (lastOpenedInfoWindow) {
-		lastOpenedInfoWindow.close();
-	}
-}
-
-//Render markers on map
+//MAP & MARKERS
 var lastOpenedInfoWindow; 
 var fitMapToMarkersAutomatically = true;
 var markerResultMap = {};
 
 function renderMap (content) {
-	//initialize map
+	// Initialize map
 	var map = new google.maps.Map(document.getElementById('map'), { streetViewControl: false, mapTypeControl: false, zoom: 2, minZoom: 1, maxZoom: 15 });
 	var markers = [];
     
@@ -352,7 +328,7 @@ function renderMap (content) {
 	for (var i = 0; i < content.hits.length; ++i) {
 		var hit = content.hits[i];
 		if (hit._geoloc) {
-		    var marker = createMarker(map, hit, i);
+		    var marker = createMarker(map, hit);
 		    markerResultMap[hit.objectID] = marker;
 		    markers.push(marker);
 		}
@@ -367,56 +343,77 @@ function renderMap (content) {
 		map.fitBounds(mapBounds);
 	}
 
-	//retrieve center
+	// Trigger search when map is dragged
 	google.maps.event.addListener(map, "dragend", function() {
 		algoliaHelper.setQueryParameter('aroundLatLng', [map.getCenter().lat(),map.getCenter().lng()].join(', ')).setQueryParameter('aroundLatLngViaIP', false).search();
     });
 }
-algoliaHelper.on('result', function(content, state) {
-	
 
-});
+function createMarkerInfoWindow(hit) {
+	var contentString = '<div id="content">'+
+    '<h5 class="markerHeading" data-lat="'+hit._geoloc.lat+'" data-lng="'+hit._geoloc.lng+'">'+hit.programName+'</h5>'+
+    '<div class="markerBody">'+
+    '<p>'+hit.address+'</p>'+
+    '<a href="http://'+hit.website+'">'+hit.website+'</a>'+
+    '</div>';
 
-//Render facet values
-function renderFacets($facet_container, results) {
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
 
-  var facets = results.facets.map(function(facet) {
-    var name = facet.name;
-  	$('#btn-'+name+'-dropdown-menu').html('');
-
-    //handle facet clicks
-    // $('#btn-'+name+'-dropdown-menu').on('click', handleFacetClick);
-	
-    var facetValues = results.getFacetValues(name)
-
-    var facetsValuesList = $.map(facetValues, function(facetValue) {
-      var facetValueClass = facetValue.isRefined ? 'refined'  : '';
-
-      var valueAndCount = '<a class="facet-selection" data-attribute="' + name + '" data-value="' + facetValue.name + '" href="#">' + facetValue.name + ' (' + facetValue.count + ')' + '</a>';
-
-      return '<li class="' + facetValueClass + '">' + valueAndCount + '</li>';
-      
-    })
-
-  //   $('.facet-checkbox').click(function(){
-  //   	if ($(this).is(':checked')) {
-		// 	$(this).parent().fadeTo('slow', 0.5);
-		// 	$(this).attr('checked'); //This line
-		// }else{
-
-		// 	$(this).parent().fadeTo('slow', 1);
-		// 	$(this).removeAttr('checked');
-		// }
-  //   })
-
-    var facetList = facetsValuesList.join('')
-
-    $('#btn-'+name+'-dropdown-menu').html(facetList)
-  });
-
+    return infowindow;
 }
 
-// faceting
+function createMarker(map, hit) {
+	var infowindow = createMarkerInfoWindow(hit);
+
+    var marker = new google.maps.Marker({
+      position: {lat: hit._geoloc.lat, lng: hit._geoloc.lng},
+      map: map,
+      program: hit.programName
+    });
+
+    marker.addListener('click', function(){
+    	//add info window 
+		closeLastOpenedInfoWindow()
+    	infowindow.open(map, this);
+    	lastOpenedInfoWindow = infowindow;
+
+    	//highlight result
+    	var objectID = hit.objectID;
+		scrollResultIntoView(objectID);
+		highlightResult(objectID);
+    });
+
+    return marker;
+}
+
+function closeLastOpenedInfoWindow() {
+	if (lastOpenedInfoWindow) {
+		lastOpenedInfoWindow.close();
+	}
+}
+
+function toggleMapMarkerInfoWindow(objectID) {
+	var markerSelected = markerResultMap[objectID];
+	google.maps.event.trigger(markerSelected, 'click');
+} 
+
+//FACETS
+function renderFacets($facet_container, results) {
+	var content = {facets: []}
+	results.facets.map(function(facet) {
+		data = {}
+		data['facetButtonLabel'] = facetLabelMap[facet.name];
+		data['facetAttrName'] = facet.name;
+		data['facetValueList'] = results.getFacetValues(facet.name);
+	    content.facets.push(data)
+	});
+
+  	$facetsContainer.html(facetTemplate.render(content));
+	$('.facet-selection').on('click', handleFacetClick);
+}
+
 function handleFacetClick(e) {
 	e.preventDefault();
 
@@ -429,7 +426,5 @@ function handleFacetClick(e) {
 
 	renderRefinements()
 }
-
-
 
 });
