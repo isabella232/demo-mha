@@ -82,30 +82,6 @@
       </ul>
 	  
 	  
-		
-		
-		<!-- Small modal -->
-		<!--<div class="modal fade translate-modal" tabindex="-1" role="dialog" aria-labelledby="Google Translate Modal">
-		  <div class="modal-dialog modal-sm" role="document">
-			<div class="modal-content">
-			  <div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title">Translate with Google</h4>
-			  </div>
-			  <div class="modal-body">
-				<div style="padding:50px 10px; ">
-								</div>
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default" onclick="eraseCookie('googtrans', '.pressdns.com'); eraseCookie('googtrans', ''); eraseCookie('googtrans', 's18702.p536.sites.pressdns.com'); location.reload();">Show original</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
-			  </div>
-			</div>
-		  </div>
-		</div>-->
-	  
-	  
-	  
     </div>
   </div>
 </div>
@@ -201,7 +177,7 @@
 <!-- 	    /container-fluid inside-hero-01 -->
 		
 
-<!-- Algolia HTML  -->
+<!-- Algolia HTML  start-->
 		<div class="maincontent">
 				
 			<div class="container" id='search-container'>
@@ -210,173 +186,29 @@
                  	<input type="search" autocomplete="off" class="algolia-input-search" placeholder="I am looking for help with...">
 
                  	<!-- facet -->
-                 	<div class="algolia-facets-container">
-                 		<!-- $('#btn-'+name+'-dropdown-menu').html(facetList) -->
+                 	<div class="algolia-facets-container"></div>
 
-                 		<!-- special population -->
-                 		<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-specialPopulation dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Special Population 
-						  	<span class="caret"></span>
-						  </button>
-						  <ul class="dropdown-menu algolia-facets" id="btn-specialPopulations-dropdown-menu"></ul>
-						</div>
-						
-						<!-- insurance -->
-						<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-insurance dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Insurance 
-						  	<span class="caret"></span>
-						  </button>
-						  <ul class="dropdown-menu algolia-facets" id="btn-insurancesAccepted-dropdown-menu"></ul>
-						</div>
-
-						<!-- age -->
-						<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-age dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Age 
-						  	<span class="caret"></span>
-						  </button>
-						  <ul class="dropdown-menu algolia-facets" id="btn-ageGroup-dropdown-menu"></ul>
-						</div>
-
-						<!-- borough dropdown -->
-						<div class="btn-group algolia-facets-item">
-						  <button type="button" class="btn facet-borough dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						  	Borough 
-						  	<span class="caret"></span>
-						  </button>
-						  <ul class="dropdown-menu algolia-facets" id="btn-county-dropdown-menu"></ul>
-						</div>
-
-                 	</div>
+                 	
                 </div>
                 
-                <div class="filter-container">
-                	<div class="filter-label">FILTERS: </div>
-                	<div class="filter-chips"></div>
-                </div>
-				
+                <div class="algolia-refinements"></div>
 				<br>
-
-				<div id="stats"></div>
+				<div class="algolia-stats"></div>
+                
+                <!-- algolia wrapper -->
                 <div class="algolia-wrapper">
-
                     <div class="algolia-wrapper-sidebar">
-                        <!-- <div class="algolia-sort-container">
-                            <p class="algolia-sort-active">Mental Health</p>
-                        </div> -->
-                        
-                        <!-- search results -->
                         <div class="algolia-results"></div>
-
-                        <!-- pagination -->
                     	<div class="algolia-pagination"></div>
-                    	<div class="algolia-showMore"></div>
-                        
-                        
+	                    <div id='result-modal'></div>
                     </div>
 
-
-                <!-- Modal -->
-				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				  <div class="modal-dialog" role="document">
-				    <div class="modal-content">
-				      <div class="modal-header">
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				        <h4 class="modal-programName" id="myModalLabel"></h4>
-				      </div>
-				      <div class="modal-body">
-				        <p><b>Parent Agency:</b> <span class="modal-parentAgency"></span></p>
-				        <p><b>Address: </b><span class="modal-address"></span></p>
-				        <p><b>Phone: </b><span class="modal-tel"></span></p>
-				        <p><b>Fax: </b><span class="modal-fax"></span></p>
-				        <p><b>Website: </b><span class="modal-website"></span></p>
-				        <p><b>Email: </b><span class="modal-email"></span></p>
-
-				        <p><b>Description:</b></p>
-				        <p class="modal-description"></p>
-
-				        <table >
-					        <tr>
-					        	<td class="modal-h"><b>Languages</b></td>
-					        	<td class="modal-b modal-language"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Specialties</b></td>
-					        	<td class="modal-b modal-specialties"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Special Population Served</b></td>
-					        	<td class="modal-b modal-special-population"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Wheelchair Accessible</b></td>
-					        	<td class="modal-b modal-disability"></td>
-					        </tr>
-
-
-					        <tr>
-					        	<td class="modal-h"><b>Eligibility</b></td>
-					        	<td class="modal-b modal-eligibility"></td>
-					        </tr>
-					        
-					        <tr>
-					        	<td class="modal-h"><b>Hours</b></td>
-					        	<td class="modal-b modal-hours"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Walk-ins</b></td>
-					        	<td class="modal-b modal-walkins"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Walk-in hours</b></td>
-					        	<td class="modal-b modal-walkinhour"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Same Day Appointments</b></td>
-					        	<td class="modal-b modal-samedayappoint"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Insurance Accepted</b></td>
-					        	<td class="modal-b modal-insurance"></td>
-					        </tr>
-
-
-					        <tr>
-					        	<td class="modal-h"><b>Free Services</b></td>
-					        	<td class="modal-b modal-freeServices"></td>
-					        </tr>
-
-					        <tr>
-					        	<td class="modal-h"><b>Flexible Payments/Slideing Scale</b></td>
-					        	<td class="modal-b modal-slidingScale"></td>
-					        </tr>
-
-				        </table>
-				        <br>
-				      </div>
-				    </div>
-				  </div>
-				</div>
-
-
-                    <!-- wrapper     -->
                     <div class="algolia-wrapper-main">
                         <div class="algolia-map-container"><div id="map"></div>
-                        
                         <div><a href="https://docs.google.com/spreadsheets/d/1NRxtS4wNkWwee4v5fuWpPC9XRN3YKT8_CYDhfTfdf2I/edit#gid=0">#29</a></div>
                     </div>
-                        
-
-                    </div>
+                </div>
+                <!-- algolia wrapper -->
                     
                 </div>
 
@@ -387,7 +219,6 @@
   </script>
 
 <!-- Results template -->
-<!-- Hit template -->
   <script type="text/template" id="results-template">
     {{#hits}}
     <div class="algolia-result" id="algolia-result-{{objectID}}" data-objectid="{{objectID}}">
@@ -414,9 +245,141 @@
     {{/hits}}
   </script>
 
+<!-- Pagination template -->
+  <script type="text/template" id="pagination-template">
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			<!-- previous page -->
+			{{#currPage}}<li class="page-item" id="previousPage"><a class="page-link" href="#search-container" aria-label="Previous">Previous</a></li>{{/currPage}}
+			<!-- next page -->
+			{{#nextPage}}<li class="page-item" id="nextPage"><a class="page-link" href="#search-container" aria-label="Previous">Next</a></li>{{/nextPage}}
+		</ul>
+	</nav>
+  </script>
+
+ <!-- Refinement container template -->
+  <script type="text/template" id="refinement-template">
+	{{#hasRefine}}<div class="algolia-filter-label">FILTERS: </div>{{/hasRefine}}
+
+    <div class="algolia-refinement-chips">
+    	{{#chips}}
+    	<div class="algolia-facet-selected-chip" data-value="{{refinedValue}}"><div>{{refinedValue}}<span class="glyphicon glyphicon-remove" aria-hidden="true"></span></div></div>
+    	{{/chips}}
+    </div>
+  </script>
+
+<!-- Modal template -->
+  <script type="text/template" id="result-modal-template">
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-programName" id="myModalLabel">{{ programName }}</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p><b>Parent Agency:</b>{{ parentAgency }}</p>
+	        <p><b>Address: </b>{{ address }}</p>
+	        <p><b>Phone: </b>{{ tel }}</p>
+	        <p><b>Fax: </b>{{ fax }}</p>
+	        <p><b>Website: </b><a href="{{ website }}">{{ website }}</a></p>
+	        <p><b>Email: </b><a href="{{ email }}">{{ email }}</a></p>
+
+	        <p><b>Description:</b></p>
+	        <p>{{ description }}</p>
+
+	        <table >
+		        <tr>
+		        	<td class="modal-h"><b>Languages</b></td>
+		        	<td class="modal-b">{{ language }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Specialties</b></td>
+		        	<td class="modal-b">{{ specialties }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Special Population Served</b></td>
+		        	<td class="modal-b">{{ specialPop }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Wheelchair Accessible</b></td>
+		        	<td class="modal-b">{{ disability }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Eligibility</b></td>
+		        	<td class="modal-b">{{ eligibility }}</td>
+		        </tr>
+		        
+		        <tr>
+		        	<td class="modal-h"><b>Hours</b></td>
+		        	<td class="modal-b">{{{ hours }}}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Walk-ins</b></td>
+		        	<td class="modal-b">{{ walkins }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Walk-in hours</b></td>
+		        	<td class="modal-b">{{ walkinhour }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Same Day Appointments</b></td>
+		        	<td class="modal-b">{{ samedayappoint }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Insurance Accepted</b></td>
+		        	<td class="modal-b">{{ insurance }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Free Services</b></td>
+		        	<td class="modal-b">{{ freeServices }}</td>
+		        </tr>
+
+		        <tr>
+		        	<td class="modal-h"><b>Flexible Payments/Slideing Scale</b></td>
+		        	<td class="modal-b">{{ slidingScale }}</td>
+		        </tr>
+
+	        </table>
+	        <br>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+  </script>
+
+<!-- Facet template -->
+ <script type="text/template" id="facet-template">
+ 	{{#facets}}
+		<div class="btn-group algolia-facets-item">
+		  <button type="button" class="btn facet-{{facetAttrName}} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		  	{{facetButtonLabel}}
+		  	<span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu algolia-facets" id="btn-{{facetAttrName}}-dropdown-menu">
+		  	{{#facetValueList}}
+		  		<li class="{{#isRefined}}refined{{/isRefined}}">
+		  			<a class="facet-selection" data-attribute="{{facetAttrName}}" data-value="{{name}}" href="#">{{name}} ({{count}}) 
+		  			</a>
+		  		</li>
+		  	{{/facetValueList}}
+		  </ul>
+		</div>
+	{{/facets}}
+ </script>
+
 <!-- Templates -->
 
-<!-- Algolia HTML  -->
+<!-- Algolia HTML end-->
 
 
 				<article style="display: none;">
