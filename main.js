@@ -11,12 +11,15 @@ var PARAMS = {
 	hitsPerPage: HITS_PER_PAGE,
 	facets: ['specialPopulations', 'insurancesAccepted', 'ageGroup', 'county'] 
 };
+//Map facets to facet buttons
 var facetLabelMap = {
 	specialPopulations: 'Special Population',
 	insurancesAccepted: 'Insurance',
 	ageGroup: 'Age',
 	county: 'Borough'
 }
+//Order the attributes with highlighting to display in the result
+var orderedHighlightedAttr = ['specialties', 'parentAgency', 'description']
 
 // Client + Helper initialization
 var algolia = algoliasearch(APPLICATION_ID, SEARCH_ONLY_API_KEY);
@@ -161,11 +164,9 @@ function showResultDetailsButton(objectID) {
 //HIGHLIGHTS SNIPPETS
 function renderHighlightsSnippets(hit){
 	var results = '';
-	var orderedHighlightedAttr = ['specialties', 'parentAgency', 'description']
 	var highlighted = getHighlightSnippets(hit);
 
 	//parse relevant highlights
-	//PS. This is disgusting
 	for (var i=0; i < orderedHighlightedAttr.length; i++) {
 		if (results.indexOf('<em>') < 0) {
 			var attr = orderedHighlightedAttr[i];
